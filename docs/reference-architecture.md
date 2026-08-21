@@ -3516,38 +3516,2403 @@ That is the route-closure problem.
 
 ---
 
-# Current Architectural Invariants
+# 7. Route Closure: Can Any Alternate Consequence-Bearing Path Bypass Governance?
 
-| ID | Invariant | Purpose |
-|---|---|---|
-| **C1** | No Direct Consequence | AI-originated protected actions require governance before mutation. |
-| **C2** | No Inherited Admissibility | Material state changes invalidate prior admissibility. |
-| **C3** | Exact Action Binding | Execution must match the bound action. |
-| **C4** | Executor Binding | Execution must occur through the bound executor. |
-| **C5** | Bounded Authorization Lifetime | Authorization must remain within its permitted lifetime. |
-| **C6** | Single-Use Where Required | Consumed single-use authorization cannot be reused. |
-| **C7** | Governance Continuity | Material governance changes must prevent inherited execution permission. |
-| **C8** | Commit-Time Revalidation | Protected mutation requires valid continuity at the commit boundary. |
-| **C9** | Enforcement Required | Protected mutation may occur only through an enforcement decision that validates the required authorization and continuity state. |
-| **C10** | Fail Closed at the Enforcement Boundary | Missing, invalid, or unverifiable execution legitimacy must prevent protected mutation. |
+Enforcement establishes that a governed execution route will not create protected consequence unless the required authorization and continuity conditions are satisfied.
+
+That is necessary.
+
+It is not sufficient.
+
+A system can perfectly govern one execution path and still fail if another path reaches the same protected state without equivalent control.
+
+For example:
+
+```text
+Governed Route
+Agent
+  ↓
+Governance
+  ↓
+Binding
+  ↓
+Continuity
+  ↓
+Enforcement Point
+  ↓
+Payments Service
+  ↓
+Bank Account
+````
+
+may coexist with:
+
+```text
+Alternate Route
+Legacy Service
+  ↓
+Direct Database / Internal API
+  ↓
+Bank Account
+```
+
+If the alternate route can create the same protected consequence without crossing an equivalent enforcement boundary, the governance architecture is incomplete.
+
+Route closure therefore asks:
+
+> **Can any consequence-bearing path reach protected state without satisfying the same current governance obligations?**
+
+The central principle is:
+
+> **No admissible path. No admissible execution.**
 
 ---
 
-# Architecture Status
+## 7.1 The Route-Closure Problem
+
+Suppose the primary execution flow is:
+
+```text
+Treasury-Agent-01
+      ↓
+Governance Control Plane
+      ↓
+Bound Authorization
+      ↓
+Continuity
+      ↓
+Payments-Service-Prod
+      ↓
+Corporate-Account-01
+```
+
+This route may satisfy every invariant defined so far.
+
+But the same protected resource may also be reachable through:
+
+```text
+Admin Console
+```
+
+or:
+
+```text
+Legacy Payments API
+```
+
+or:
+
+```text
+Batch Settlement Job
+```
+
+or:
+
+```text
+Direct Database Procedure
+```
+
+or:
+
+```text
+Privileged Service Account
+```
+
+or:
+
+```text
+Emergency Operations Interface
+```
+
+If any of those routes can create an equivalent protected mutation without crossing an equivalent governance boundary, then:
+
+```text
+Governed Primary Path
+    ≠
+Governed System
+```
+
+This is the distinction route closure exists to formalize.
+
+---
+
+## 7.2 Protected State as the Governance Target
+
+Route closure should be defined around the protected consequence, not merely around a particular API.
+
+Let:
+
+```text
+Q
+```
+
+represent protected enterprise state.
+
+For example:
+
+```text
+Q = Corporate-Account-01 balance
+```
+
+or:
+
+```text
+Q = privileged user directory
+```
+
+or:
+
+```text
+Q = production deployment state
+```
+
+or:
+
+```text
+Q = regulated customer record
+```
+
+The important question is not:
+
+> Does the preferred API have governance?
+
+It is:
+
+> **What paths can cause a material transition in Q?**
+
+Conceptually:
+
+```text
+S_t(Q)
+    →
+S_(t+1)(Q)
+```
+
+Every path capable of producing a protected transition must be considered part of the route-closure problem.
+
+---
+
+## 7.3 Consequence-Bearing Routes
+
+Define a consequence-bearing route:
+
+```text
+r ∈ R_Q
+```
+
+where:
+
+```text
+R_Q
+```
+
+is the set of routes capable of materially affecting protected state `Q`.
+
+A route may include:
+
+* agent tool calls;
+* internal APIs;
+* external APIs;
+* service-to-service calls;
+* message queues;
+* workflow engines;
+* scheduled jobs;
+* database procedures;
+* administrative consoles;
+* privileged scripts;
+* human-operated interfaces;
+* recovery mechanisms;
+* failover paths;
+* emergency access;
+* delegated services;
+* asynchronous workers.
+
+Route closure requires visibility into this set.
+
+If a consequence-bearing route is unknown, it cannot be proven governed.
+
+---
+
+## 7.4 Route Closure as a Graph Property
+
+The system can be represented as a directed graph:
+
+```text
+G = (V, E)
+```
+
+where:
+
+* `V` = actors, services, tools, gateways, stores, executors, and protected resources;
+* `E` = possible consequence-bearing transitions between them.
+
+Let:
+
+```text
+A
+```
+
+represent AI-originated action sources.
+
+Let:
+
+```text
+Q
+```
+
+represent protected state.
+
+Let:
+
+```text
+P(A, Q)
+```
+
+be the set of all paths from an AI-originated source to protected state.
+
+Route closure requires that every such path cross an enforcement boundary satisfying the relevant governance obligations.
+
+Conceptually:
+
+```text
+∀ p ∈ P(A, Q),
+    ∃ e ∈ p :
+        EquivalentEnforcement(e) = TRUE
+```
+
+Meaning:
+
+> **Every consequence-bearing path from an AI-originated action to protected state must contain an enforcement point that applies the required governance controls.**
+
+This is stronger than proving that one preferred path is governed.
+
+---
+
+## 7.5 Equivalent Enforcement
+
+Not every path must use the same technology.
+
+For example:
+
+```text
+Payments API
+```
+
+may use:
+
+```text
+Authorization Gateway
+```
+
+while:
+
+```text
+Administrative Settlement Service
+```
+
+may use:
+
+```text
+transaction-native authorization controls
+```
+
+Route closure does not require identical implementation.
+
+It requires equivalent governance effect.
+
+An alternate enforcement point is equivalent only if it preserves the required control properties, such as:
+
+* exact action validation;
+* current authority;
+* current continuity state;
+* executor validation;
+* resource binding;
+* expiration;
+* replay protection;
+* fail-closed behavior;
+* provenance.
+
+Therefore:
+
+```text
+Different Enforcement Mechanism
+    ≠
+Governance Bypass
+```
+
+provided the required governance semantics remain equivalent.
+
+---
+
+## 7.6 Route Discovery
+
+Before route closure can be established, consequence-bearing paths must be identified.
+
+A route inventory may include:
+
+```text
+Protected Resource:
+Corporate-Account-01
+```
+
+Possible mutation routes:
+
+```text
+1. Payments-Service-Prod
+2. Legacy-Payments-API
+3. Treasury-Admin-Console
+4. Batch-Settlement-Worker
+5. Emergency-Payment-Service
+6. Direct Database Procedure
+```
+
+For each route, the architecture should determine:
+
+```text
+Who can invoke it?
+What identity does it use?
+What privilege does it exercise?
+What protected state can it mutate?
+What enforcement boundary applies?
+What authorization does it require?
+What continuity checks apply?
+What provenance does it emit?
+```
+
+A route that cannot be characterized remains an unresolved governance risk.
+
+---
+
+## 7.7 Hidden and Secondary Routes
+
+Some of the most important bypasses are not part of the normal application flow.
+
+Examples include:
+
+* maintenance endpoints;
+* internal debugging interfaces;
+* service-to-service shortcuts;
+* emergency administrative functions;
+* legacy compatibility APIs;
+* shadow integrations;
+* migration tools;
+* test interfaces accidentally enabled in production;
+* asynchronous workers;
+* queue consumers;
+* recovery scripts;
+* manual operator tooling.
+
+These may be perfectly legitimate operational mechanisms.
+
+The governance issue arises when they can create the same protected consequence under weaker conditions.
+
+Route closure therefore treats secondary paths as first-class architectural objects.
+
+---
+
+## 7.8 Delegated Execution Routes
+
+An AI agent may not directly invoke the final system.
+
+Instead:
+
+```text
+Agent A
+    ↓
+Agent B
+    ↓
+Workflow Service
+    ↓
+Execution Service
+    ↓
+Protected Resource
+```
+
+Governance cannot assume that because the first transition was validated, later transitions remain governed.
+
+Each delegation may change:
+
+* executor;
+* authority;
+* action representation;
+* scope;
+* resource;
+* environment;
+* evidence context.
+
+A route is therefore not closed merely because:
+
+```text
+Agent A
+```
+
+was governed.
+
+The entire consequence path must preserve the required governance semantics.
+
+---
+
+## 7.9 Multi-Agent Route Closure
+
+In a multi-agent system:
+
+```text
+Planner Agent
+      ↓
+Research Agent
+      ↓
+Treasury Agent
+      ↓
+Execution Agent
+      ↓
+Payments Service
+```
+
+the final result may be correct even if intermediate routing violates governance.
+
+Examples include:
+
+* an agent using an unauthorized tool;
+* a delegated agent operating outside scope;
+* silent replacement of an executor;
+* a fallback route bypassing policy evaluation;
+* an alternate agent invoking the protected tool directly.
+
+Therefore:
+
+```text
+CorrectFinalAction
+    ≠
+GovernedRoute
+```
+
+Route closure requires that the path itself remains valid.
+
+---
+
+## 7.10 Fallback Paths
+
+Production systems often contain fallback logic:
+
+```text
+Primary Service unavailable
+        ↓
+Use Secondary Service
+```
+
+This improves resilience.
+
+But fallback paths can weaken governance if:
+
+```text
+Primary Path
+    → governed
+```
+
+while:
+
+```text
+Fallback Path
+    → less controlled
+```
+
+A resilient governance architecture should therefore require:
+
+```text
+FallbackExecution
+    =>
+EquivalentGovernance
+```
+
+If equivalent control is unavailable:
+
+```text
+FAIL CLOSED
+```
+
+may be safer than silently degrading governance.
+
+---
+
+## 7.11 Retry Paths
+
+Retries are also consequence-bearing routes.
+
+Suppose:
+
+```text
+Request 1
+    → timeout
+```
+
+The orchestrator retries:
+
+```text
+Request 2
+```
+
+If the first request actually committed before the timeout occurred, the retry may duplicate consequence.
+
+Therefore retry behavior must interact with:
+
+* authorization identity;
+* idempotency;
+* replay protection;
+* execution receipts;
+* current state.
+
+A retry should not create a new consequence merely because the requester did not observe the previous response.
+
+---
+
+## 7.12 Asynchronous Routes
+
+Asynchronous systems introduce another control boundary.
+
+For example:
+
+```text
+Agent
+  ↓
+Governance
+  ↓
+Queue
+  ↓
+Worker
+  ↓
+Protected System
+```
+
+The action may sit in a queue long enough for:
+
+* authority to change;
+* approval to expire;
+* policy to change;
+* evidence to become stale.
+
+The worker therefore cannot assume that:
+
+```text
+Message existed in queue
+```
+
+means:
+
+```text
+Execution still authorized
+```
+
+The worker must participate in the continuity and enforcement model.
+
+---
+
+## 7.13 Human-Operated Routes
+
+Route closure also applies where a human can create the same consequence.
+
+For example:
+
+```text
+AI Agent Route
+    → governed
+```
+
+while:
+
+```text
+Operator Console
+    → manual action
+```
+
+If the human route is intentionally governed under a different control regime, that may be valid.
+
+The requirement is not that all human actions use the AI governance plane.
+
+The requirement is that the route has an explicit authoritative control model.
+
+Therefore:
+
+```text
+Alternate Route
+    ≠
+Bypass
+```
+
+if it is governed by an equivalent or separately authorized enterprise control mechanism.
+
+Route closure should not collapse legitimate administrative authority into AI-specific controls.
+
+---
+
+## 7.14 Break-Glass and Emergency Routes
+
+Many enterprise systems intentionally support emergency access.
+
+For example:
+
+```text
+Break-Glass Administrator
+```
+
+may bypass normal workflow controls during:
+
+* outages;
+* incident response;
+* disaster recovery;
+* safety emergencies.
+
+Such a route is not necessarily a governance failure.
+
+But it must be explicitly modeled.
+
+A break-glass route should define:
+
+* who can invoke it;
+* under which emergency condition;
+* which protected resources it can affect;
+* what enhanced authentication applies;
+* whether dual control is required;
+* what expiration applies;
+* what evidence is captured;
+* what post-event review is mandatory.
+
+The key distinction is:
+
+```text
+Explicit Emergency Authority
+    ≠
+Uncontrolled Bypass
+```
+
+---
+
+## 7.15 Credential Route Closure
+
+A protected service may have multiple credentials capable of performing the same action.
+
+For example:
+
+```text
+Payments-Service-Prod credential
+Treasury-Admin credential
+Batch-Worker credential
+Legacy-Service credential
+```
+
+Even if the preferred executor is correctly bound, another credential may still have sufficient privilege.
+
+Therefore route closure must consider privilege topology.
+
+Conceptually:
+
+```text
+CredentialCanMutate(c, Q)
+```
+
+for every credential `c`.
+
+If a credential can materially affect `Q`, then its execution path must be governed under an explicit control model.
+
+---
+
+## 7.16 Data-Layer Route Closure
+
+Application-level governance can be bypassed if protected state is directly mutable at the data layer.
+
+For example:
+
+```text
+Governed API
+    ↓
+Database
+```
+
+may coexist with:
+
+```text
+Privileged DB Client
+    ↓
+Database
+```
+
+If the second route can produce the same business consequence, the application enforcement point does not fully close the route.
+
+Possible controls may include:
+
+* database permissions;
+* stored procedures;
+* write isolation;
+* service-owned credentials;
+* row-level security;
+* append-only controls;
+* transaction constraints;
+* privileged access management.
+
+The architecture does not prescribe one mechanism.
+
+It requires that data-layer mutation routes be included in the route model.
+
+---
+
+## 7.17 Tool-Level Route Closure
+
+An AI agent may have multiple tools capable of achieving the same consequence.
+
+For example:
+
+```text
+tool.transfer_funds()
+```
+
+and:
+
+```text
+tool.execute_sql()
+```
+
+may both ultimately modify payment state.
+
+If only:
+
+```text
+transfer_funds()
+```
+
+is governed, the agent may bypass governance through the more general tool.
+
+Therefore tool governance should consider **effective consequence**, not merely tool name.
+
+Conceptually:
+
+```text
+Consequence(tool_a)
+    =
+Consequence(tool_b)
+```
+
+may imply both require equivalent control.
+
+---
+
+## 7.18 Semantic Route Closure
+
+Two different actions may create materially equivalent consequences.
+
+For example:
+
+```text
+transfer_funds()
+```
+
+and:
+
+```text
+create_payment_instruction()
+```
+
+may ultimately result in the same financial movement.
+
+Route closure must therefore avoid relying only on syntactic action identity.
+
+The architecture should model:
+
+```text
+ConsequenceClass(a)
+```
+
+so that materially equivalent state transitions can be governed consistently.
+
+---
+
+## 7.19 Infrastructure Route Closure
+
+Infrastructure can also create bypasses.
+
+Examples include:
+
+* direct cloud API access;
+* infrastructure automation;
+* privileged Kubernetes credentials;
+* serverless invocation;
+* database snapshots and restores;
+* IAM modification;
+* secret rotation;
+* network routing changes.
+
+Some of these routes may not directly perform the business action but can alter the system so that the consequence becomes possible.
+
+This means route closure may need to include upstream privilege-changing operations for high-consequence systems.
+
+---
+
+## 7.20 Route Closure and Least Privilege
+
+Least privilege supports route closure by reducing the number of principals capable of reaching protected state.
+
+Prefer:
+
+```text
+AI Agent
+    → no direct mutation privilege
+```
+
+and:
+
+```text
+Governed Executor
+    → narrowly scoped mutation privilege
+```
+
+over:
+
+```text
+AI Agent
+    → broad enterprise credentials
+```
+
+Every unnecessary privilege can create an alternate route.
+
+Therefore:
+
+> **Route closure becomes easier when consequence-bearing privilege is concentrated into small, explicitly governed executors.**
+
+---
+
+## 7.21 Route Closure and Network Architecture
+
+Network segmentation can reinforce route closure.
+
+For example:
+
+```text
+Agent Network
+     X
+Direct access to protected database
+```
+
+while:
+
+```text
+Agent Network
+    ↓
+Governance Gateway
+    ↓
+Execution Network
+    ↓
+Protected System
+```
+
+This makes the governed path a structural property of the deployment rather than merely an application convention.
+
+Possible mechanisms include:
+
+* network policies;
+* service mesh authorization;
+* private endpoints;
+* firewall rules;
+* workload identity restrictions;
+* zero-trust access controls.
+
+---
+
+## 7.22 Route Closure and Service Ownership
+
+Protected resources should ideally have clear ownership.
+
+The owning service should control the mutation interface.
+
+For example:
+
+```text
+Corporate-Account-01
+```
+
+should not be writable by arbitrary applications.
+
+Instead:
+
+```text
+Payments-Service-Prod
+```
+
+owns the write boundary.
+
+This supports:
+
+```text
+One protected resource
+    ↓
+Small number of authoritative mutation interfaces
+```
+
+which makes route closure easier to reason about and test.
+
+---
+
+## 7.23 Route Inventory
+
+A useful implementation artifact is a route inventory.
+
+For the bank-transfer example:
+
+| Route                   | Can Mutate Protected State? | Enforcement                     | Status                  |
+| ----------------------- | --------------------------: | ------------------------------- | ----------------------- |
+| Payments-Service-Prod   |                         Yes | Governance enforcement point    | CLOSED                  |
+| Treasury Admin Console  |                         Yes | Human privileged-control regime | REVIEW                  |
+| Legacy Payments API     |                         Yes | None                            | OPEN                    |
+| Batch Settlement Worker |                         Yes | Service authorization only      | REVIEW                  |
+| Direct Database Access  |                         Yes | DBA privilege                   | REVIEW                  |
+| Reporting Service       |                          No | Read-only                       | NOT CONSEQUENCE-BEARING |
+
+Route closure requires resolving all consequence-bearing routes.
+
+---
+
+## 7.24 Route States
+
+A route may be classified as:
+
+```text
+CLOSED
+EQUIVALENTLY_GOVERNED
+EXPLICITLY_EXEMPT
+UNRESOLVED
+OPEN
+```
+
+### CLOSED
+
+The route crosses the required enforcement boundary.
+
+### EQUIVALENTLY_GOVERNED
+
+The route uses a different mechanism but satisfies equivalent governance requirements.
+
+### EXPLICITLY_EXEMPT
+
+The route is intentionally governed under a separately authorized control regime, such as a tightly controlled break-glass process.
+
+### UNRESOLVED
+
+The route exists, but its governance properties have not yet been established.
+
+### OPEN
+
+The route can create protected consequence without sufficient governance control.
+
+For production readiness:
+
+```text
+OPEN
+```
+
+should not be acceptable for AI-originated protected consequence.
+
+---
+
+## 7.25 Route-Closure Evaluation
+
+A conceptual route-closure function is:
+
+```text
+RC(Q) =
+    EvaluateRoutes(
+        ProtectedResource = Q,
+        ConsequenceRoutes = R_Q
+    )
+```
+
+with:
+
+```text
+RC(Q) ∈ {
+    CLOSED,
+    PARTIAL,
+    OPEN,
+    UNKNOWN
+}
+```
+
+Where:
+
+### CLOSED
+
+All identified consequence-bearing routes are governed under an acceptable control model.
+
+### PARTIAL
+
+Some routes are governed while others remain unresolved.
+
+### OPEN
+
+At least one route can bypass required governance.
+
+### UNKNOWN
+
+The route inventory is incomplete or insufficiently verified.
+
+A system should not claim route closure when:
+
+```text
+RC(Q) ≠ CLOSED
+```
+
+---
+
+## 7.26 Route Closure Is a Stronger Claim Than Enforcement
+
+The distinction can now be stated precisely.
+
+Enforcement establishes:
+
+```text
+This route cannot execute without governance.
+```
+
+Route closure establishes:
+
+```text
+No relevant route can create the consequence without acceptable governance.
+```
+
+Therefore:
+
+```text
+EnforcedRoute
+    ≠>
+ClosedSystem
+```
+
+but:
+
+```text
+ClosedSystem
+    =>
+All relevant routes governed
+```
+
+within the declared architecture boundary.
+
+---
+
+## 7.27 Architectural Boundary
+
+Route closure must always be stated relative to a defined boundary.
+
+For example:
+
+```text
+Boundary:
+Enterprise-A production payment architecture
+```
+
+The architecture may establish route closure within that boundary.
+
+It cannot automatically prove closure across:
+
+* external banking infrastructure;
+* systems outside enterprise control;
+* unknown administrative channels;
+* undocumented third-party integrations.
+
+Therefore route-closure claims must be bounded.
+
+A responsible statement is:
+
+> **All identified consequence-bearing routes within the declared system boundary require equivalent governance enforcement.**
+
+Not:
+
+> **No bypass is possible anywhere.**
+
+---
+
+## 7.28 Discovery vs Proof
+
+Route discovery and route closure are different activities.
+
+Discovery asks:
+
+```text
+What routes exist?
+```
+
+Proof asks:
+
+```text
+Do all identified relevant routes satisfy the required governance property?
+```
+
+A route inventory may be produced using:
+
+* architecture diagrams;
+* service catalogs;
+* IAM analysis;
+* API inventories;
+* network topology;
+* code analysis;
+* cloud configuration;
+* runtime tracing;
+* penetration testing;
+* operational interviews.
+
+The architecture itself does not guarantee complete discovery.
+
+It requires that route closure be treated as an evidence-backed claim rather than an assumption.
+
+---
+
+## 7.29 Testing Route Closure
+
+Route closure should eventually be testable.
+
+For example:
+
+```text
+test_governed_payments_api_requires_authorization()
+```
+
+```text
+test_legacy_payments_api_cannot_mutate_protected_state()
+```
+
+```text
+test_agent_has_no_direct_database_write_permission()
+```
+
+```text
+test_batch_worker_requires_equivalent_authorization()
+```
+
+```text
+test_break_glass_path_requires_emergency_authority()
+```
+
+```text
+test_untrusted_executor_cannot_reach_payment_commit()
+```
+
+This connects the architecture directly to implementation evidence.
+
+---
+
+## 7.30 Bank Transfer Route-Closure Example
+
+Protected consequence:
+
+```text
+Transfer ₹250,000
+from Corporate-Account-01
+to Vendor-ABC
+```
+
+Identified routes:
+
+```text
+Route A:
+Treasury Agent
+    ↓
+Governance
+    ↓
+Payments-Service-Prod
+```
+
+Status:
+
+```text
+CLOSED
+```
+
+because required authorization, continuity, and enforcement apply.
+
+---
+
+Route B:
+
+```text
+Treasury Agent
+    ↓
+Legacy-Payments-API
+```
+
+If this API can still execute the payment without the bound authorization:
+
+```text
+OPEN
+```
+
+The overall system is therefore:
+
+```text
+RC(Corporate-Account-01)
+    =
+OPEN
+```
+
+even though Route A is perfectly governed.
+
+The remediation may be:
+
+```text
+disable legacy write route
+```
+
+or:
+
+```text
+place equivalent enforcement in front of legacy route
+```
+
+or:
+
+```text
+remove AI / service access to legacy credentials
+```
+
+Only after the bypass is removed or equivalently governed can the route state become:
+
+```text
+CLOSED
+```
+
+---
+
+## 7.31 Invariant C11 — Route Closure
+
+For every AI-originated consequence-bearing path to protected state:
+
+```text
+∀ p ∈ P(A, Q),
+    GovernedPath(p)
+```
+
+Meaning:
+
+> **Every identified AI-originated consequence-bearing path to protected state must cross an acceptable governance enforcement boundary.**
+
+The implementation of the enforcement boundary may differ by route.
+
+The governance effect may not.
+
+---
+
+## 7.32 Invariant C12 — No Alternate Consequence Path
+
+For protected state `Q`:
+
+```text
+Exists(
+    p ∈ P(A, Q)
+    AND
+    NOT GovernedPath(p)
+)
+    =>
+RouteClosure(Q) = FALSE
+```
+
+Meaning:
+
+> **If any identified alternate AI-originated path can create the protected consequence without acceptable governance enforcement, route closure has failed.**
+
+A perfectly governed primary path cannot compensate for an open alternate path.
+
+---
+
+## 7.33 What Route Closure Proves — and What It Does Not
+
+Within a declared system boundary, route closure can establish that:
+
+* consequence-bearing routes have been explicitly identified;
+* protected resources have defined mutation paths;
+* AI-originated paths require governance enforcement;
+* alternate executors cannot silently bypass the primary control path;
+* fallback and retry routes have governance semantics;
+* relevant asynchronous execution paths are included;
+* credentials capable of protected mutation are considered;
+* data-layer and administrative routes are explicitly addressed;
+* unresolved or open routes are visible rather than assumed safe.
+
+Route closure does **not** by itself prove that:
+
+* route discovery is globally complete;
+* the underlying operating system is uncompromised;
+* infrastructure administrators cannot maliciously subvert controls;
+* third-party systems outside the declared boundary are governed;
+* every future configuration change preserves closure;
+* every implementation is free from vulnerabilities.
+
+Route closure is therefore a **bounded architectural and operational property**, not a universal security guarantee.
+
+---
+
+## 7.34 Route-Closure Architecture
+
+<!-- IMAGE PLACEHOLDER: FIGURE 7 -->
+
+<!-- Recommended file: ../diagrams/figure-07-route-closure.png -->
+
+![Figure 7 — Route Closure: Every Consequence-Bearing Path Must Be Governed](../diagrams/figure-07-route-closure.png)
+
+**Figure 7 — Route Closure: Every Consequence-Bearing Path to Protected State Must Cross an Acceptable Governance Boundary.**
+
+---
+
+## 7.35 Section 7 Conclusion
+
+Enforcement asks:
+
+> **Does this execution route obey governance?**
+
+Route closure asks:
+
+> **Are there any other routes that can create the same consequence without equivalent governance?**
+
+The architecture now reaches:
 
 ```text
 Proposed Action
       ↓
-Admissibility       ✓ Section 3
+Admissibility
       ↓
-Binding             ✓ Section 4
+Binding
       ↓
-Continuity          ✓ Section 5
+Continuity
       ↓
-Enforcement         ✓ Section 6
+Enforcement
       ↓
-Route Closure       → Section 7
+Route Closure
+      ↓
+Protected Consequence
+```
+
+At this point, the system has moved from:
+
+```text
+Governance Decision
+```
+
+to:
+
+```text
+Bound and current authorization
+```
+
+to:
+
+```text
+Enforced execution
+```
+
+to:
+
+```text
+Closed consequence-bearing route set
+```
+
+One final architectural obligation remains.
+
+After the consequence occurs, the enterprise must be able to reconstruct:
+
+* what was proposed;
+* why it was allowed;
+* which authority existed;
+* what evidence applied;
+* which policy governed it;
+* who or what approved it;
+* what authorization was bound;
+* whether continuity remained valid;
+* which enforcement point committed the action;
+* which route was used;
+* what actually executed;
+* and what state resulted.
+
+That is the decision-provenance problem.
+
+The next section is:
+
+> **Section 8 — Decision Provenance: Can the Legitimacy of the Consequence Be Reconstructed?**
+
+---
+
+
+# 8. Decision Provenance: Can the Legitimacy of the Consequence Be Reconstructed?
+
+The previous sections establish whether an action is admissible, exactly what is authorized, whether that authorization remains current, whether execution is structurally enforced, and whether alternate consequence-bearing routes are closed.
+
+The final architectural obligation is accountability.
+
+After a consequential action occurs, the enterprise should be able to answer:
+
+> **What was proposed, why was it allowed, under which authority and evidence, through which execution path, and what consequence actually followed?**
+
+That is the purpose of decision provenance.
+
+The governing principle is:
+
+> **Logging records activity. Provenance reconstructs legitimacy.**
+
+---
+
+## 8.1 The Provenance Problem
+
+A conventional operational log may record:
+
+```text
+09:03:12
+POST /payments
+200 OK
+
+```text
+Treasury-Agent-01
+transferred ₹250,000
+to Vendor-ABC
+```
+
+Neither necessarily establishes whether the action was legitimate when it occurred.
+
+For a consequence-bearing AI system, accountability may require reconstructing:
+
+* the proposed action;
+* the originating actor;
+* the governance state evaluated;
+* the admissibility decision;
+* the authority relied upon;
+* the evidence relied upon;
+* the policy version applied;
+* the human approval, if required;
+* the bounded execution authorization;
+* the continuity result at commit time;
+* the enforcement point;
+* the execution route;
+* the actual mutation;
+* and the resulting outcome.
+
+Decision provenance preserves the relationships among those artifacts.
+
+---
+
+## 8.2 Provenance Is Not Chain-of-Thought
+
+Decision provenance does not require storing or exposing private model reasoning.
+
+The relevant artifacts are externally meaningful governance facts:
+
+```text
+Action Proposed
+      ↓
+Governance State Evaluated
+      ↓
+Decision Produced
+      ↓
+Authorization Bound
+      ↓
+Continuity Validated
+      ↓
+Enforcement Applied
+      ↓
+Execution Performed
+      ↓
+Outcome Recorded
+```
+
+Therefore:
+
+```text
+Decision Provenance
+    ≠
+Model Chain-of-Thought
+```
+
+The architecture is concerned with reconstructing legitimacy, not reconstructing hidden reasoning traces.
+
+---
+
+## 8.3 The Decision-to-Outcome Chain
+
+A consequence should be traceable across stable identifiers.
+
+Conceptually:
+
+```text
+action_id
+    ↓
+decision_id
+    ↓
+authorization_id
+    ↓
+continuity_check_id
+    ↓
+enforcement_id
+    ↓
+execution_id
+    ↓
+outcome_id
+```
+
+For example:
+
+```text
+ACT-2041
+    ↓
+DEC-1882
+    ↓
+AUTHZ-7F92
+    ↓
+CONT-441
+    ↓
+ENF-992
+    ↓
+EXEC-881
+    ↓
+OUT-557
+```
+
+The purpose is not merely to store identifiers.
+
+The relationship between them must remain reconstructable.
+
+---
+
+## 8.4 What the Provenance Record Must Preserve
+
+A conceptual provenance record may contain:
+
+```text
+DecisionProvenance = {
+    action,
+    actor,
+    governance_state,
+    decision,
+    authorization,
+    continuity,
+    enforcement,
+    route,
+    execution,
+    outcome
+}
+```
+
+At minimum, a protected execution should be traceable to:
+
+### Action
+
+```text
+action_id
+action_hash
+action_type
+material parameters
+```
+
+### Actor
+
+```text
+actor_id
+workload / agent identity
+tenant
+environment
+```
+
+### Governance State
+
+```text
+capability_snapshot_id
+identity_snapshot_id
+authority_snapshot_id
+evidence_snapshot_id
+scope_snapshot_id
+policy_id
+policy_version
+risk_classification
+approval_id
+```
+
+### Decision
+
+```text
+decision_id
+decision_effect
+decision_timestamp
+reason_codes
+```
+
+### Authorization
+
+```text
+authorization_id
+bound_action_hash
+bound_resource
+bound_executor
+issued_at
+expires_at
+```
+
+### Continuity
+
+```text
+continuity_check_id
+continuity_result
+continuity_timestamp
+```
+
+### Enforcement
+
+```text
+enforcement_id
+enforcement_point_id
+enforcement_result
+```
+
+### Route
+
+```text
+route_id
+route_closure_state
+```
+
+### Execution
+
+```text
+execution_id
+execution_timestamp
+execution_result
+resource_version_before
+resource_version_after
+```
+
+### Outcome
+
+```text
+outcome_id
+outcome_type
+outcome_timestamp
+```
+
+The exact schema is implementation-specific.
+
+The architectural requirement is that the legitimacy chain remains reconstructable.
+
+---
+
+## 8.5 Logging vs Provenance
+
+The distinction can be stated simply.
+
+Logging answers:
+
+> **What happened?**
+
+Decision provenance answers:
+
+> **Why was this consequence legitimate under the governance state that existed when it happened?**
+
+For example:
+
+```text
+LOG:
+Payment executed successfully.
+```
+
+versus:
+
+```text
+PROVENANCE:
+Action ACT-2041
+was evaluated under governance state G-991,
+allowed by decision DEC-1882,
+bound as AUTHZ-7F92,
+remained valid at CONT-441,
+committed through ENF-992,
+executed as EXEC-881,
+and produced outcome OUT-557.
+```
+
+The second record establishes lineage.
+
+---
+
+## 8.6 Governance-State Provenance
+
+The provenance record should preserve the governance state used at decision time.
+
+For example:
+
+```text
+authority_snapshot_id = AUTH-9841
+evidence_snapshot_id  = EVD-225
+policy_version        = 17
+approval_id           = APR-118
+```
+
+This matters because the current state may later be different.
+
+For example:
+
+```text
+Authority at execution:
+CURRENT
+```
+
+may later become:
+
+```text
+Authority during audit:
+REVOKED
+```
+
+A later audit must not incorrectly evaluate historical legitimacy using only current state.
+
+Provenance should preserve:
+
+```text
+state at decision
+```
+
+and, where relevant:
+
+```text
+state at continuity check
+```
+
+---
+
+## 8.7 Binding and Execution Provenance
+
+The authorization should be traceable to the execution that consumed it.
+
+Conceptually:
+
+```text
+DEC-1882
+    ↓
+AUTHZ-7F92
+    ↓
+EXEC-881
+```
+
+This enables a reviewer to establish:
+
+* which decision authorized the action;
+* exactly what action was bound;
+* which executor was authorized;
+* which resource was protected;
+* whether the authorization was still valid;
+* whether it was used once;
+* and which execution resulted.
+
+Without this linkage, execution may be observable without being attributable to a specific governance decision.
+
+---
+
+## 8.8 Continuity Provenance
+
+A valid binding at `t0` is not sufficient.
+
+The provenance chain should preserve whether the authorization remained valid at the consequence boundary.
+
+For example:
+
+```text
+continuity_check_id = CONT-441
+continuity_result   = VALID
+```
+
+with relevant current-state results such as:
+
+```text
+authority     = CURRENT
+approval      = PRESENT
+policy        = VALID
+evidence      = CURRENT
+authorization = UNEXPIRED
+replay_state  = UNUSED
+```
+
+This establishes:
+
+```text
+Valid when authorized
+        +
+Still valid when committed
+```
+
+rather than relying only on historical approval.
+
+---
+
+## 8.9 Enforcement Provenance
+
+The record should preserve which enforcement point admitted execution.
+
+For example:
+
+```text
+enforcement_point_id = PAYMENT-GATEWAY-01
+enforcement_result   = COMMIT
+```
+
+Relevant verification outcomes may include:
+
+```text
+signature      = VALID
+action_hash    = MATCH
+resource       = MATCH
+executor       = MATCH
+continuity     = VALID
+replay_state   = UNUSED
+```
+
+This provides evidence that governance was actually applied at the consequence boundary.
+
+---
+
+## 8.10 Route Provenance
+
+Because route closure is part of the architecture, the execution path should also be identifiable.
+
+For example:
+
+```text
+route_id = R1
+```
+
+where:
+
+```text
+R1 =
+Treasury-Agent-01
+→ Governance Control Plane
+→ Payments-Service-Prod
+→ Corporate-Account-01
+```
+
+This helps distinguish a valid governed execution from an execution reaching the same protected resource through an alternate route.
+
+---
+
+## 8.11 Execution Receipt
+
+After a successful protected mutation, the enforcement layer should produce an execution receipt.
+
+A conceptual receipt may contain:
+
+```text
+execution_id
+authorization_id
+action_hash
+executor_id
+resource_id
+commit_timestamp
+execution_result
+resource_version_before
+resource_version_after
+authorization_consumed
+```
+
+The receipt provides evidence of what occurred at the consequence boundary.
+
+It should be linked to the broader decision provenance record.
+
+---
+
+## 8.12 Execution Result and Business Outcome
+
+Execution and final business outcome are not always identical.
+
+For example:
+
+```text
+Execution Result:
+PAYMENT_ACCEPTED
+```
+
+may later become:
+
+```text
+Business Outcome:
+PAYMENT_SETTLED
+```
+
+or:
+
+```text
+PAYMENT_REVERSED
+```
+
+Therefore:
+
+```text
+Execution Result
+    ≠
+Final Outcome
+```
+
+where the enterprise process has meaningful downstream state.
+
+The provenance architecture should preserve that distinction where necessary.
+
+---
+
+## 8.13 Provenance Integrity
+
+A provenance record is useful only if material fields cannot be silently rewritten afterward.
+
+Possible mechanisms include:
+
+* append-only storage;
+* cryptographic hashing;
+* digital signatures;
+* hash chaining;
+* immutable event storage;
+* write-once storage;
+* external timestamping.
+
+The architecture does not mandate a particular mechanism.
+
+The requirement is:
+
+> **Unauthorized modification of material provenance must be detectable.**
+
+However:
+
+```text
+Tamper Evidence
+    ≠
+Substantive Truth
+```
+
+A cryptographically preserved record proves integrity of the stored record.
+
+It does not independently prove that the underlying evidence or authority was correct.
+
+---
+
+## 8.14 Evidence, Authority, and Provenance Must Remain Distinct
+
+Evidence, authority, and provenance serve different purposes.
+
+```text
+Evidence
+```
+
+supports the governance decision.
+
+```text
+Authority
+```
+
+establishes entitlement.
+
+```text
+Provenance
+```
+
+records how those elements contributed to the consequence.
+
+Therefore:
+
+```text
+Evidence ≠ Authority ≠ Provenance
+```
+
+This separation prevents audit artifacts from being mistaken for substantive governance proof.
+
+---
+
+## 8.15 Replayability
+
+Where governance decisions are deterministic, preserved state should support later decision replay.
+
+Conceptually:
+
+```text
+Replay(
+    action,
+    governance_snapshot,
+    policy_version
+)
+    →
+decision'
+```
+
+Then:
+
+```text
+decision'
+    =
+decision_original
+```
+
+should normally hold when:
+
+```text
+same governed inputs
++
+same policy version
++
+same decision rules
+```
+
+are used.
+
+Replayability allows the enterprise to distinguish:
+
+```text
+Decision changed because governance logic changed
+```
+
+from:
+
+```text
+Decision changed because the underlying state changed
+```
+
+The objective is replay of the governance decision path, not reproduction of private model reasoning.
+
+---
+
+## 8.16 Structured Reason Codes
+
+Governance decisions should preserve machine-readable reason codes where practical.
+
+Examples include:
+
+```text
+AUTHORITY_REVOKED
+EVIDENCE_STALE
+APPROVAL_MISSING
+ACTION_MISMATCH
+EXECUTOR_MISMATCH
+AUTHORIZATION_EXPIRED
+REPLAY_DETECTED
+ROUTE_OPEN
+```
+
+Structured reason codes improve:
+
+* testing;
+* audit;
+* incident investigation;
+* deterministic replay;
+* policy analysis.
+
+Human-readable explanations can be generated from these facts.
+
+They should not replace them.
+
+---
+
+## 8.17 Data Minimization
+
+Decision provenance should not become uncontrolled collection of AI activity.
+
+The architecture should preserve the information required to establish legitimacy while avoiding unnecessary duplication of sensitive information.
+
+A practical principle is:
+
+```text
+Preserve governance facts
+Reference evidence where possible
+Minimize sensitive payload duplication
+Do not capture hidden reasoning
+Apply access controls
+Apply retention policy
+```
+
+Therefore:
+
+> **Accountability does not require storing everything. It requires preserving the right evidence.**
+
+---
+
+## 8.18 Provenance at Commit
+
+For high-consequence actions, provenance generation should not be treated merely as optional post-processing.
+
+Where technically practical, a strong implementation may couple:
+
+```text
+protected mutation
++
+authorization consumption
++
+execution receipt
+```
+
+within the same transaction or equivalent consistency boundary.
+
+Conceptually:
+
+```text
+BEGIN
+
+validate authorization
+validate continuity
+apply mutation
+consume authorization
+persist execution receipt
+
+COMMIT
+```
+
+This reduces failure states such as:
+
+```text
+mutation succeeded
+but authorization remains reusable
+```
+
+or:
+
+```text
+mutation succeeded
+but execution evidence was lost
+```
+
+---
+
+## 8.19 Bank Transfer Provenance Example
+
+Consider:
+
+```text
+Treasury-Agent-01
+proposes:
+
+₹250,000
+Corporate-Account-01
+→ Vendor-ABC
+```
+
+The governance chain becomes:
+
+```text
+ACT-2041
+      ↓
+DEC-1882 = ALLOW
+      ↓
+APR-118 = PRESENT
+      ↓
+AUTHZ-7F92
+      ↓
+CONT-441 = VALID
+      ↓
+ENF-992 = COMMIT
+      ↓
+R1 = CLOSED
+      ↓
+EXEC-881 = SUCCESS
+      ↓
+OUT-557 = PAYMENT_ACCEPTED
+```
+
+The resulting provenance record allows a reviewer to establish:
+
+```text
+What action was proposed?
+Which actor proposed it?
+Which governance state applied?
+Why was it allowed?
+Which approval applied?
+What exactly was authorized?
+Was that authorization still valid?
+Which enforcement point committed it?
+Which route was used?
+What executed?
+What outcome followed?
+```
+
+That is the accountability obligation this architecture requires.
+
+---
+
+## 8.20 Invariant C13 — Provenance Completeness
+
+For every successful protected mutation:
+
+```text
+ProtectedMutationSucceeded(a)
+    =>
+ReconstructableGovernanceChain(a)
+```
+
+Meaning:
+
+> **A successful protected mutation must leave sufficient provenance to reconstruct the governance chain that authorized and executed it.**
+
+---
+
+## 8.21 Invariant C14 — Decision-to-Execution Linkage
+
+For every protected execution:
+
+```text
+Execution
+    =>
+LinkedTo(
+        Decision,
+        Authorization,
+        Continuity,
+        Enforcement
+    )
+```
+
+Meaning:
+
+> **A protected execution must be traceably linked to the governance decision, bounded authorization, continuity result, and enforcement decision that permitted it.**
+
+---
+
+## 8.22 Invariant C15 — Provenance Integrity
+
+For material provenance:
+
+```text
+UnauthorizedModification(Provenance)
+    =>
+DetectableIntegrityFailure
+```
+
+Meaning:
+
+> **Unauthorized modification of material provenance records must be detectable.**
+
+This establishes tamper evidence.
+
+It does not claim that integrity alone proves substantive truth.
+
+---
+
+## 8.23 What Decision Provenance Proves — and What It Does Not
+
+Decision provenance can establish that:
+
+* a specific action was proposed;
+* a specific actor originated it;
+* a defined governance state was evaluated;
+* a specific decision was produced;
+* a specific authorization was bound;
+* continuity was evaluated before consequence;
+* a specific enforcement point admitted execution;
+* a specific route was used;
+* a specific executor performed the mutation;
+* an execution receipt exists;
+* an outcome is linked to the execution;
+* the chain can later be reconstructed.
+
+Decision provenance does **not** itself prove that:
+
+* every source fact was true;
+* every authority source was legitimate;
+* every policy was correct;
+* every approval was appropriate;
+* every implementation component was uncompromised;
+* every route outside the declared architecture boundary was governed.
+
+Provenance preserves the history of governance.
+
+It does not replace governance.
+
+---
+
+## 8.24 Decision Provenance Architecture
+
+![Figure 8 — Decision Provenance: Reconstructing Legitimacy from Action to Outcome](../diagrams/figure-08-decision-provenance.png)
+
+**Figure 8 — Decision Provenance: Reconstructing Legitimacy from Proposed Action to Outcome.**
+
+---
+
+## 8.25 Closing the Reference Architecture
+
+The complete runtime governance path is now:
+
+```text
+Proposed Action
+      ↓
+Admissibility
+      ↓
+Binding
+      ↓
+Continuity
+      ↓
+Enforcement
+      ↓
+Route Closure
       ↓
 Execution
       ↓
-Decision Provenance → Section 8
+Decision Provenance
+```
+
+Each stage answers a separate control question:
+
+| Stage               | Core Question                                                                    |
+| ------------------- | -------------------------------------------------------------------------------- |
+| Admissibility       | Should this action be permitted under the current governance state?              |
+| Binding             | Exactly what action, resource, executor, and state does the decision apply to?   |
+| Continuity          | Is that authorization still legitimate now?                                      |
+| Enforcement         | Is consequence technically dependent on satisfying governance?                   |
+| Route Closure       | Can an alternate path create the same consequence without equivalent governance? |
+| Execution           | What protected mutation actually occurred?                                       |
+| Decision Provenance | Can the legitimacy and outcome of the consequence be reconstructed?              |
+
+The architecture therefore moves from:
+
+```text
+Intelligence proposes
+```
+
+to:
+
+```text
+Governance determines admissibility
+```
+
+to:
+
+```text
+Binding makes the decision specific
+```
+
+to:
+
+```text
+Continuity keeps it current
+```
+
+to:
+
+```text
+Enforcement makes it controlling
+```
+
+to:
+
+```text
+Route closure prevents alternate bypass
+```
+
+to:
+
+```text
+Execution creates consequence
+```
+
+to:
+
+```text
+Provenance establishes accountability
+```
+
+The resulting architectural principle is:
+
+> **A consequential AI action should become real only when the enterprise can establish that the action is admissible, precisely bound, still current, structurally enforced, non-bypassable within the declared system boundary, and reconstructable afterward.**
+
+This completes the core reference architecture.
+
+The next phase is implementation: expressing these architectural claims as contracts, invariants, tests, and a concrete bank-transfer reference scenario.
+
+
+
+---
+
