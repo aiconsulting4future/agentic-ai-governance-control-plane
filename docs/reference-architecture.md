@@ -1328,7 +1328,7 @@ The next section is:
 > **Section 5 — Continuity: Does the Validated State Still Hold at the Consequence Boundary?**
 ---
 
-````markdown
+
 # 5. Continuity: Does the Validated State Still Hold at the Consequence Boundary?
 
 Binding establishes exactly what was authorized.
@@ -2459,11 +2459,7 @@ Those are enforcement and route-closure obligations.
 
 ## 5.25 Continuity Architecture
 
-<!-- IMAGE PLACEHOLDER: FIGURE 5 -->
-
-<!-- Recommended file: ../diagrams/figure-05-continuity.png -->
-
-![Figure 5 — Continuity: Revalidate Before Consequence](YOUR_IMAGE_URL)
+![Figure 5 — Continuity: Revalidate Before Consequence](../diagrams/figure-05-continuity.png)
 
 **Figure 5 — Continuity: Does the Validated State Still Hold at the Consequence Boundary?**
 
@@ -2507,7 +2503,7 @@ I would add this **directly after Section 4 and before the current invariant sum
 
 Also update the invariant table to include:
 
-```markdown
+
 | **C7** | Governance Continuity | Material governance changes must prevent inherited execution permission. |
 | **C8** | Commit-Time Revalidation | Protected mutation requires valid continuity at the commit boundary. |
 ````
@@ -2534,9 +2530,5 @@ Decision Provenance → Section 8
 
 This section is intentionally substantial because **Continuity is the bridge between authorization and actual consequence**. Section 6 can now focus cleanly on the different problem of structural enforcement rather than mixing temporal revalidation into it.
 
----
 
-![Figure 5 — Continuity: Does the Validated State Still Hold at the Consequence Boundary?](../diagrams/figure-05-continuity.png)
-
----
 
