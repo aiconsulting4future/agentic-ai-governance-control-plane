@@ -1410,8 +1410,10 @@ After the consequence occurs, the enterprise must be able to reconstruct:
 
 That is the decision-provenance problem.
 
-The next section is:
-
-> **Section 8 — Decision Provenance: Can the Legitimacy of the Consequence Be Reconstructed?**
-
 ---
+
+## Continue
+
+**Next Section:** [Section 8 — Decision Provenance](08-decision-provenance.md)
+
+**Return to Main:** [Architecture Index](README.md)

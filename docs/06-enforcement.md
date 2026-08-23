@@ -1006,3 +1006,9 @@ The next question is therefore:
 That is the route-closure problem.
 
 ---
+
+## Continue
+
+**Next Section:** [Section 7 — Route Closure](07-route-closure.md)
+
+**Return to Main:** [Architecture Index](README.md)

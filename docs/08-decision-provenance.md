@@ -1037,3 +1037,9 @@ Decision Provenance ✓ Section 8
 > **Core Reference Architecture v0.1: Complete**
 
 ---
+
+## Continue
+
+**Next:** [Return to Architecture Index](README.md)
+
+**Return to Main Repository:** [The Agentic AI Governance Control Plane](../README.md)

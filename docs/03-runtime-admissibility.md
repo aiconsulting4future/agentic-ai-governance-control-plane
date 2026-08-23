@@ -360,3 +360,9 @@ The next proof obligation is:
 > **Can this decision be made specific to one exact action, resource, executor, and validated state?**
 
 ---
+
+## Continue
+
+**Next Section:** [Section 4 — Binding](04-binding.md)
+
+**Return to Main:** [Architecture Index](README.md)

@@ -232,3 +232,11 @@ Every architectural claim in this document should eventually be one of the follo
 4. explicitly identified as a design principle rather than a proven guarantee.
 
 This capstone is therefore not a summary of seven articles. It consolidates the series into an implementable reference architecture whose claims can later be expressed as system invariants, enforcement mechanisms, and executable tests.
+
+---
+
+## Continue
+
+**Next Section:** [Section 2 — From Model Risk to Consequence Risk](02-from-model-risk-to-consequence-risk.md)
+
+**Return to Main:** [Architecture Index](README.md)

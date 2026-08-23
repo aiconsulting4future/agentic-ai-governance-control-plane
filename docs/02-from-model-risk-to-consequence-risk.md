@@ -186,3 +186,9 @@ The next question is:
 > **What must be true before a proposed action becomes admissible?**
 
 ---
+
+## Continue
+
+**Next Section:** [Section 3 — Runtime Admissibility](03-runtime-admissibility.md)
+
+**Return to Main:** [Architecture Index](README.md)

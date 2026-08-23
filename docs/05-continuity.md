@@ -1169,3 +1169,9 @@ That is the enforcement problem.
 
 ---
 
+## Continue
+
+**Next Section:** [Section 6 — Enforcement](06-enforcement.md)
+
+**Return to Main:** [Architecture Index](README.md)
+

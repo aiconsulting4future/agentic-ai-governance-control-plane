@@ -501,6 +501,10 @@ The system must still answer:
 
 > **Do the conditions that justified this authorization still hold when the system is ready to create consequence?**
 
-
-
 ---
+
+## Continue
+
+**Next Section:** [Section 5 — Continuity](05-continuity.md)
+
+**Return to Main:** [Architecture Index](README.md)
