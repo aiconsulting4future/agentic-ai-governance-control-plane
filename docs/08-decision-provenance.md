@@ -25,7 +25,8 @@ A conventional operational log may record:
 POST /payments
 200 OK
 
-```text
+A richer application log may record:
+
 Treasury-Agent-01
 transferred ₹250,000
 to Vendor-ABC
@@ -981,16 +982,7 @@ The next phase is implementation: expressing these architectural claims as contr
 
 ### 1. Final Architectural Invariants
 
-A single authoritative table listing **C1–C15**, with:
-
-* ID
-* invariant name
-* one-line purpose
-* originating section
-
-That removes the inconsistency we found with the stale mid-document table and gives readers one definitive index.
-
-Example:
+The completed reference architecture defines the following architectural invariants:
 
 | ID  | Invariant                           | Purpose                                                                           | Section |
 | --- | ----------------------------------- | --------------------------------------------------------------------------------- | ------- |
@@ -1013,7 +1005,6 @@ Example:
 
 ### 2. Architecture Completion Status
 
-Then immediately below it:
 
 ```text
 Proposed Action

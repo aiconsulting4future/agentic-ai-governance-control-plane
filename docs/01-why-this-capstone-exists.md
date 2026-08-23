@@ -2,8 +2,8 @@
 
 ## A Reference Architecture for Runtime Admissibility, Binding, Continuity, Enforcement, Route Closure, and Decision Provenance
 
-**Version:** v0.1-draft  
-**Status:** Reference Architecture — Work in Progress
+**Version:** v0.1  
+**Status:** Reference Architecture — Complete
 
 ---
 

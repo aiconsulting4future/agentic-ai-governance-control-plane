@@ -12,7 +12,7 @@ A system can correctly produce:
 
 ```text
 DENY
-````
+```
 
 and still fail governance if the protected system accepts the action through an execution path that does not require the governance decision.
 

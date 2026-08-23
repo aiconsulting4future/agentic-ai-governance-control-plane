@@ -25,7 +25,7 @@ Enforcement Point
 Payments Service
   ↓
 Bank Account
-````
+```
 
 may coexist with:
 

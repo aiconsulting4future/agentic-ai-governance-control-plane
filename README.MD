@@ -5,7 +5,7 @@
 > **Can this action, by this actor, under these conditions, become real now?**
 
 ---
-![The Agentic AI Governance Control Plane](/diagrams/hero-agentic-ai-governance-control-plane.png)
+![The Agentic AI Governance Control Plane](diagrams/hero-agentic-ai-governance-control-plane.png)
 ---
 
 ![Status](https://img.shields.io/badge/Architecture-v0.1%20Complete-success)
