@@ -1290,46 +1290,7 @@ The system must still answer:
 
 > **Do the conditions that justified this authorization still hold when the system is ready to create consequence?**
 
-That is the continuity problem.
 
----
-
-# Current Architectural Invariants
-
-| ID     | Invariant                      | Purpose                                                             |
-| ------ | ------------------------------ | ------------------------------------------------------------------- |
-| **C1** | No Direct Consequence          | AI-originated protected actions require governance before mutation. |
-| **C2** | No Inherited Admissibility     | Material state changes invalidate prior admissibility.              |
-| **C3** | Exact Action Binding           | Execution must match the bound action.                              |
-| **C4** | Executor Binding               | Execution must occur through the bound executor.                    |
-| **C5** | Bounded Authorization Lifetime | Authorization must remain within its permitted lifetime.            |
-| **C6** | Single-Use Where Required      | Consumed single-use authorization cannot be reused.                 |
-
----
-
-# Architecture Status
-
-```text
-Proposed Action
-      ↓
-Admissibility       ✓ Section 3
-      ↓
-Binding             ✓ Section 4
-      ↓
-Continuity          → Section 5
-      ↓
-Enforcement         → Section 6
-      ↓
-Route Closure       → Section 7
-      ↓
-Execution
-      ↓
-Decision Provenance → Section 8
-```
-
-The next section is:
-
-> **Section 5 — Continuity: Does the Validated State Still Hold at the Consequence Boundary?**
 
 ---
 
@@ -2504,7 +2465,7 @@ That is the enforcement problem.
 
 ---
 
-It was in my previous message **above the infographic generation**, but the image tool output pushed it out of view. Here is **Section 6 again in full Markdown**, ready to paste directly after Section 5.
+
 
 
 # 6. Enforcement: How Governance Becomes Structurally Unavoidable
@@ -5916,3 +5877,61 @@ The next phase is implementation: expressing these architectural claims as contr
 
 ---
 
+### 1. Final Architectural Invariants
+
+A single authoritative table listing **C1–C15**, with:
+
+* ID
+* invariant name
+* one-line purpose
+* originating section
+
+That removes the inconsistency we found with the stale mid-document table and gives readers one definitive index.
+
+Example:
+
+| ID  | Invariant                           | Purpose                                                                           | Section |
+| --- | ----------------------------------- | --------------------------------------------------------------------------------- | ------- |
+| C1  | No Direct Consequence               | AI-originated protected actions require governance before mutation.               | 2       |
+| C2  | No Inherited Admissibility          | Material state changes invalidate prior admissibility.                            | 3       |
+| C3  | Exact Action Binding                | Execution must match the bound action.                                            | 4       |
+| C4  | Executor Binding                    | Execution must occur through the bound executor.                                  | 4       |
+| C5  | Bounded Authorization Lifetime      | Authorization must remain within its permitted lifetime.                          | 4       |
+| C6  | Single-Use Where Required           | Consumed single-use authorization cannot be reused.                               | 4       |
+| C7  | Governance Continuity               | Material governance changes prevent inherited execution permission.               | 5       |
+| C8  | Commit-Time Revalidation            | Protected mutation requires valid continuity at commit time.                      | 5       |
+| C9  | Enforcement Required                | Protected mutation requires governance-aware enforcement.                         | 6       |
+| C10 | Fail Closed at Enforcement Boundary | Missing or invalid execution proof cannot permit mutation.                        | 6       |
+| C11 | Route Closure                       | Every identified consequence-bearing path must be governed.                       | 7       |
+| C12 | No Alternate Consequence Path       | Any ungoverned alternate route means closure has failed.                          | 7       |
+| C13 | Provenance Completeness             | Successful protected mutation must leave reconstructable governance lineage.      | 8       |
+| C14 | Decision-to-Execution Linkage       | Execution must link back to decision, authorization, continuity, and enforcement. | 8       |
+| C15 | Provenance Integrity                | Unauthorized modification of provenance must be detectable.                       | 8       |
+   
+
+### 2. Architecture Completion Status
+
+Then immediately below it:
+
+```text
+Proposed Action
+      ↓
+Admissibility       ✓ Section 3
+      ↓
+Binding             ✓ Section 4
+      ↓
+Continuity          ✓ Section 5
+      ↓
+Enforcement         ✓ Section 6
+      ↓
+Route Closure       ✓ Section 7
+      ↓
+Execution
+      ↓
+Decision Provenance ✓ Section 8
+```
+
+
+> **Core Reference Architecture v0.1: Complete**
+
+---
