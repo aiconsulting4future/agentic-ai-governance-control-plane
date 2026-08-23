@@ -158,7 +158,7 @@ The complete architecture is divided into eight focused documents.
 | **07** | [Route Closure](docs/07-route-closure.md) | Whether alternate consequence-bearing paths can bypass governance |
 | **08** | [Decision Provenance](docs/08-decision-provenance.md) | How legitimacy is reconstructed after consequence |
 
-### [Explore the complete architecture index →](docs/README.md)
+### [Explore the complete architecture index →](docs/README.MD)
 
 ---
 
