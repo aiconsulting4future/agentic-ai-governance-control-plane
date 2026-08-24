@@ -719,9 +719,9 @@ agentic-ai-governance-control-plane/
 
 ### Repository Entry Points
 
-- **Architecture:** [docs/README.md](docs/README.md)
-- **Specifications:** [specifications/README.md](specifications/README.md)
-- **Practical Reference Scenario:** [examples/bank-transfer/README.md](examples/bank-transfer/README.md)
+- **Architecture:** [docs/README.md](docs/README.MD)
+- **Specifications:** [specifications/README.md](specifications/README.MD)
+- **Practical Reference Scenario:** [examples/bank-transfer/README.md](examples/bank-transfer/README.MD)
 
 ---
 
