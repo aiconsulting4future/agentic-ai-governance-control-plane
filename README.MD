@@ -11,7 +11,9 @@
 ![Status](https://img.shields.io/badge/Architecture-v0.1%20Complete-success)
 ![Focus](https://img.shields.io/badge/Focus-Runtime%20AI%20Governance-blue)
 ![Architecture](https://img.shields.io/badge/Architecture-Vendor--Neutral-6f42c1)
-![Implementation](https://img.shields.io/badge/Reference%20Implementation-Next-orange)
+![Specifications](https://img.shields.io/badge/Specifications-v0.1%20Complete-success)
+![Scenario](https://img.shields.io/badge/Bank%20Transfer-Specified-blue)
+![Implementation](https://img.shields.io/badge/Reference%20Implementation-Planned-orange)
 
 ---
 
@@ -143,9 +145,28 @@ That observation led to the **Agentic AI Governance Control Plane**.
 
 ---
 
-# Explore the Architecture
+# Explore the Repository
 
-The complete architecture is divided into eight focused documents.
+The repository is organized into three connected layers:
+
+```text
+REFERENCE ARCHITECTURE
+What control model should exist?
+        ↓
+SPECIFICATIONS
+What invariants and contracts define it?
+        ↓
+REFERENCE SCENARIO
+How do those controls behave end-to-end in practice?
+```
+
+Each layer has its own index and can be read independently, but together they form the complete v0.1 reference package.
+
+---
+
+## 1. Reference Architecture
+
+The core architecture is divided into eight focused documents.
 
 | # | Section | What It Establishes |
 |---|---|---|
@@ -159,6 +180,101 @@ The complete architecture is divided into eight focused documents.
 | **08** | [Decision Provenance](docs/08-decision-provenance.md) | How legitimacy is reconstructed after consequence |
 
 ### [Explore the complete architecture index →](docs/README.MD)
+
+---
+
+## 2. Specifications
+
+The specification layer translates the architecture into explicit implementation obligations.
+
+| Specification | What It Defines |
+|---|---|
+| [Architectural Invariants](specifications/invariants.md) | C1–C15: the control properties an implementation must preserve |
+| [Action Contract](specifications/action-contract.md) | The canonical representation of a proposed consequence-bearing action |
+| [Execution Authorization](specifications/execution-authorization.md) | The bounded authorization for one exact action, resource, executor, governance state, lifetime, and replay policy |
+| [Continuity Contract](specifications/continuity-contract.md) | How the system determines whether a bound authorization is still legitimate now |
+| [Enforcement Contract](specifications/enforcement-contract.md) | How protected mutation becomes technically dependent on valid governance proof |
+| [Provenance Contract](specifications/provenance-contract.md) | How the decision-to-outcome chain remains reconstructable and tamper-evident |
+
+### [Explore the complete specifications index →](specifications/README.MD)
+
+The specification flow is:
+
+```text
+Architectural Invariants
+        ↓
+Action Contract
+        ↓
+Runtime Admissibility
+        ↓
+Execution Authorization
+        ↓
+Continuity Contract
+        ↓
+Enforcement Contract
+        ↓
+Route Closure
+        ↓
+Provenance Contract
+```
+
+---
+
+## 3. End-to-End Reference Scenario
+
+The architecture and specifications are applied together in the repository's first complete practical scenario:
+
+### [Bank Transfer Reference Scenario →](examples/bank-transfer/README.MD)
+
+The scenario governs a high-consequence action:
+
+```text
+Treasury-Agent-01
+      ↓
+Transfer ₹250,000
+from Corporate-Account-01
+to Vendor-ABC
+```
+
+and carries it through the complete lifecycle:
+
+```text
+ACT-2041
+      ↓
+Runtime Admissibility
+      ↓
+DEC-1882 = ALLOW
+      ↓
+Binding
+      ↓
+AUTHZ-7F92
+      ↓
+Continuity
+      ↓
+CONT-441 = VALID
+      ↓
+Enforcement
+      ↓
+ENF-992 = COMMIT
+      ↓
+Route Closure
+      ↓
+R1 = CLOSED
+      ↓
+Execution
+      ↓
+EXEC-881 = SUCCESS
+      ↓
+Outcome
+      ↓
+OUT-557 = PAYMENT_ACCEPTED
+      ↓
+Decision Provenance
+      ↓
+PROV-6601
+```
+
+The scenario also defines failure cases corresponding to invariants C1–C15, making it the bridge between the reference architecture and the future code and tests.
 
 ---
 
@@ -413,60 +529,80 @@ It is to preserve the governance facts required to reconstruct legitimacy.
 
 # Architectural Invariants
 
-The architecture is expressed through explicit invariants.
-
-Examples include:
+The architecture is expressed through fifteen explicit invariants.
 
 ```text
-No Direct Consequence
-No Inherited Admissibility
-Exact Action Binding
-Executor Binding
-Bounded Authorization Lifetime
-Single-Use Authorization
-Governance Continuity
-Commit-Time Revalidation
-Enforcement Required
-Fail Closed
-Route Closure
-No Alternate Consequence Path
-Provenance Completeness
-Decision-to-Execution Linkage
-Provenance Integrity
+C1  — No Direct Consequence
+C2  — No Inherited Admissibility
+C3  — Exact Action Binding
+C4  — Executor Binding
+C5  — Bounded Authorization Lifetime
+C6  — Single-Use Where Required
+C7  — Governance Continuity
+C8  — Commit-Time Revalidation
+C9  — Enforcement Required
+C10 — Fail Closed at Enforcement Boundary
+C11 — Route Closure
+C12 — No Alternate Consequence Path
+C13 — Provenance Completeness
+C14 — Decision-to-Execution Linkage
+C15 — Provenance Integrity
 ```
 
-The long-term objective is that architectural claims become:
+These invariants are no longer only architectural statements. Their normative specification is available here:
+
+### [Architectural Invariants C1–C15 →](specifications/invariants.md)
+
+The broader specification index is available here:
+
+### [Specifications Index →](specifications/README.MD)
+
+The objective is that every material architectural claim becomes one of the following:
 
 1. **demonstrable in code,**
-2. **testable through invariants,**
-3. **enforceable through system boundaries,** or
-4. **explicitly identified as design principles rather than proven guarantees.**
-
-Detailed invariant specifications will live under:
-
-```text
-specifications/
-```
+2. **testable through an invariant,**
+3. **enforceable through a system boundary,** or
+4. **explicitly identified as a design principle rather than a proven guarantee.**
 
 ---
 
 # Reference Scenario
 
-The architecture uses a deliberately consequential example:
+The repository now includes a complete end-to-end practical specification for the architecture:
+
+## [Bank Transfer Reference Scenario →](examples/bank-transfer/README.md)
+
+Reference action:
 
 ```text
-Treasury Agent
+Treasury-Agent-01
       ↓
 Transfer ₹250,000
 from Corporate-Account-01
 to Vendor-ABC
 ```
 
-The transfer appears simple.
+The scenario applies the complete architecture and specification layer:
 
-Governance is not.
+```text
+Action Contract
+      ↓
+Runtime Admissibility
+      ↓
+Execution Authorization
+      ↓
+Continuity
+      ↓
+Enforcement
+      ↓
+Route Closure
+      ↓
+Execution
+      ↓
+Decision Provenance
+```
 
-Before that action becomes real, the architecture must establish:
+Before the action may become real, the reference scenario requires:
 
 ```text
 Capability       ✓
@@ -484,9 +620,28 @@ Enforcement      ✓
 Route Closure    ✓
 ```
 
-Only then may consequence occur.
+It also defines concrete failure cases for:
 
-The bank-transfer scenario will become the repository's first end-to-end reference implementation.
+```text
+direct execution
+material action change
+beneficiary substitution
+wrong executor
+expired authorization
+replay
+authority revocation
+approval revocation
+stale evidence
+resource-state change
+missing continuity
+invalid authorization integrity
+open alternate route
+missing execution receipt
+broken provenance linkage
+provenance tampering
+```
+
+These cases map directly to invariants C1–C15 and will later become executable tests.
 
 ---
 
@@ -532,7 +687,21 @@ agentic-ai-governance-control-plane/
 │   ├── 07-route-closure.md
 │   └── 08-decision-provenance.md
 │
+├── specifications/
+│   ├── README.md
+│   ├── invariants.md
+│   ├── action-contract.md
+│   ├── execution-authorization.md
+│   ├── continuity-contract.md
+│   ├── enforcement-contract.md
+│   └── provenance-contract.md
+│
+├── examples/
+│   └── bank-transfer/
+│       └── README.md
+│
 ├── diagrams/
+│   ├── hero-agentic-ai-governance-control-plane.png
 │   ├── figure-01-series-to-framework.png
 │   ├── figure-02-consequence-risk.png
 │   ├── figure-03-runtime-admissibility.png
@@ -542,19 +711,17 @@ agentic-ai-governance-control-plane/
 │   ├── figure-07-route-closure.png
 │   └── figure-08-decision-provenance.png
 │
-├── specifications/
-│   ├── invariants.md
-│   ├── action-contract.md
-│   └── execution-authorization.md
-│
-├── examples/
-│   └── bank-transfer/
-│
 ├── src/
 ├── tests/
 ├── LICENSE
 └── .gitignore
 ```
+
+### Repository Entry Points
+
+- **Architecture:** [docs/README.md](docs/README.md)
+- **Specifications:** [specifications/README.md](specifications/README.md)
+- **Practical Reference Scenario:** [examples/bank-transfer/README.md](examples/bank-transfer/README.md)
 
 ---
 
@@ -566,34 +733,36 @@ agentic-ai-governance-control-plane/
 | Reference Architecture | **Complete — v0.1** |
 | Eight Architecture Sections | **Complete** |
 | Architecture Diagrams | **Complete** |
-| Architectural Invariant Specification | **Next** |
-| Action Contract | **Next** |
-| Execution Authorization Contract | **Next** |
+| Architectural Invariants C1–C15 | **Complete** |
+| Action Contract | **Complete** |
+| Execution Authorization | **Complete** |
+| Continuity Contract | **Complete** |
+| Enforcement Contract | **Complete** |
+| Provenance Contract | **Complete** |
+| Bank Transfer Reference Specification | **Complete** |
+| LinkedIn Capstone | **Next** |
 | Reference Implementation | **Planned** |
 | Automated Invariant Tests | **Planned** |
-| Bank Transfer Demonstrator | **Planned** |
 
-The architecture phase is complete.
-
-The next phase moves from:
+The reference design package is now complete through the practical specification layer.
 
 ```text
 Architecture
-```
-
-to:
-
-```text
-Architecture
+     ↓
+Invariants
      ↓
 Contracts
      ↓
-Code
+Bank-Transfer Reference Scenario
      ↓
-Tests
+Reference Implementation
+     ↓
+Executable Tests
      ↓
 Evidence
 ```
+
+The next engineering phase will translate these specifications into software and executable invariant tests.
 
 ---
 
@@ -674,6 +843,74 @@ Decision Provenance
 
 # What Comes Next
 
+The architecture, invariants, contracts, and bank-transfer specification are now complete.
+
+The next transition is:
+
+```text
+Reference Architecture          ✓
+        ↓
+Architectural Invariants        ✓
+        ↓
+Formal Contracts                ✓
+        ↓
+Bank-Transfer Specification     ✓
+        ↓
+LinkedIn Capstone               NEXT
+        ↓
+Reference Implementation
+        ↓
+Executable Invariant Tests
+```
+
+The implementation phase will focus on expressing the existing claims in software rather than expanding the conceptual architecture.
+
+The objective remains:
+
+> **From describing how governed Agentic AI should work to demonstrating that the control properties can actually be enforced.**
+
+---
+
+# Authorization must be exact
+
+```text
+Approved(a) ≠ Approved(a')
+```
+
+when the material action changes.
+
+### Governance must survive to consequence
+
+```text
+Decision
+   ↓
+Binding
+   ↓
+Continuity
+   ↓
+Enforcement
+```
+
+### One governed path is not enough
+
+```text
+Governed Primary Route
+        ≠
+Governed System
+```
+
+### Accountability requires lineage
+
+```text
+Logs
+   ≠
+Decision Provenance
+```
+
+---
+
+# What Comes Next
+
 The architecture now needs to earn its claims through implementation.
 
 The next engineering work will focus on:
@@ -714,9 +951,21 @@ If you are approaching this project from an **AI governance or enterprise leader
 
 **[Start with Section 1 — Why This Capstone Exists →](docs/01-why-this-capstone-exists.md)**
 
+If you want the **complete architecture**:
+
+**[Open the Architecture Index →](docs/README.MD)**
+
 If you are approaching it from an **AI architecture or engineering perspective**:
 
-**[Start with Section 3 — Runtime Admissibility →](docs/03-runtime-admissibility.md)**
+**[Open the Specifications Index →](specifications/README.MD)**
+
+If you want to understand the **formal control properties**:
+
+**[Read Architectural Invariants C1–C15 →](specifications/invariants.md)**
+
+If you want to see **how the entire architecture works in one practical use case**:
+
+**[Open the Bank Transfer Reference Scenario →](examples/bank-transfer/README.md)**
 
 If your focus is **security and execution control**:
 
@@ -725,10 +974,6 @@ If your focus is **security and execution control**:
 If your focus is **auditability and accountability**:
 
 **[Start with Section 8 — Decision Provenance →](docs/08-decision-provenance.md)**
-
-Or explore the complete architecture:
-
-### **[Architecture Index →](docs/README.md)**
 
 ---
 
