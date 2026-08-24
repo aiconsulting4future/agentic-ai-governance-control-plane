@@ -1924,7 +1924,7 @@ This document is the canonical execution-authorization specification for **The A
 
 - [Architectural Invariants](invariants.md)
 - [Action Contract](action-contract.md)
-- [Reference Architecture Index](../docs/README.md)
+- [Reference Architecture Index](../docs/README.MD)
 - [Section 3 — Runtime Admissibility](../docs/03-runtime-admissibility.md)
 - [Section 4 — Binding](../docs/04-binding.md)
 - [Section 5 — Continuity](../docs/05-continuity.md)

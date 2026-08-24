@@ -1335,7 +1335,7 @@ This document is the canonical action-contract specification for **The Agentic A
 ## Related Specifications
 
 - [Architectural Invariants](invariants.md)
-- [Reference Architecture Index](../docs/README.md)
+- [Reference Architecture Index](../docs/README.MD)
 - [Section 2 — From Model Risk to Consequence Risk](../docs/02-from-model-risk-to-consequence-risk.md)
 - [Section 3 — Runtime Admissibility](../docs/03-runtime-admissibility.md)
 - [Section 4 — Binding](../docs/04-binding.md)
