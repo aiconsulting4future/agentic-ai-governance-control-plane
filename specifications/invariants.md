@@ -508,15 +508,15 @@ Then:
 ### Formal condition
 
 ```text
-∀ p ∈ P(A, Q),
-    GovernedPath(p)
+FOR EVERY p IN P(A, Q):
+    GovernedPath(p) = TRUE
 ```
 
 Equivalent architectural form:
 
 ```text
-∀ p ∈ P(A, Q),
-    ∃ e ∈ p :
+FOR EVERY p IN P(A, Q):
+    EXISTS e IN p SUCH THAT
         EquivalentEnforcement(e) = TRUE
 ```
 
