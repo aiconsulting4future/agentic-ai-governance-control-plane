@@ -54,6 +54,7 @@ The execution authorization is therefore **not**:
 
 - a model recommendation;
 - a generic role grant;
+- a source of standing or originating authority;
 - a standing permission;
 - a tool capability;
 - an API credential;
@@ -67,6 +68,30 @@ It is a **bounded, integrity-protected authorization candidate** that must still
 ## 2. Architectural Role
 
 The execution authorization is the primary artifact produced by the **Binding** stage.
+
+It is a **derived permission artifact**, not the originating source of authority or standing.
+
+The architecture distinguishes:
+
+```text
+Principal / Mandate
+        ↓
+Authority State
+        ↓
+Derived Execution Authorization
+        ↓
+Authorized Executor
+```
+
+and therefore:
+
+```text
+Standing ≠ Execution Authorization
+Authority ≠ Execution Authorization
+Execution Authorization ≠ Execution
+```
+
+The principal or mandate from which authority is derived, the actor requesting the action, the service issuing the authorization, and the executor permitted to create the consequence are distinct architectural roles. They may coincide in a particular implementation, but they **MUST NOT** be silently treated as equivalent.
 
 Binding establishes:
 
@@ -168,6 +193,9 @@ A conceptual authorization object is:
   "decision_id": "DEC-1882",
   "action_id": "ACT-2041",
   "actor_id": "Treasury-Agent-01",
+  "authority_principal_id": "Treasury-Manager-17",
+  "authority_basis_id": "TREASURY-MANDATE-01",
+  "authorization_issuer_id": "Governance-Binding-Service-Prod",
   "executor_id": "Payments-Service-Prod",
   "action_type": "transfer_funds",
   "action_hash": "sha256:...",
@@ -310,19 +338,49 @@ Example:
 Treasury-Agent-01
 ```
 
-The actor that originated the governed action.
+The actor that originated or requested the governed action.
 
 ### Requirement
 
-`actor_id` establishes action provenance.
+`actor_id` establishes action provenance and identifies the subject actor associated with the request.
 
-It does not by itself prove current authority.
-
-Current authority is a continuity concern.
+It does not identify the originating source of authority and does not by itself prove standing or current authority.
 
 ---
 
-## 5.6 `executor_id`
+## 5.6 Authority Derivation and Issuance Fields
+
+Where authority derivation is material, the authorization **SHOULD** explicitly distinguish:
+
+```text
+authority_principal_id
+authority_basis_id
+authorization_issuer_id
+```
+
+For the reference scenario:
+
+```text
+authority_principal_id   = Treasury-Manager-17
+authority_basis_id       = TREASURY-MANDATE-01
+authorization_issuer_id  = Governance-Binding-Service-Prod
+```
+
+### Requirement
+
+The authorization **MUST NOT** treat its own existence as the source of standing.
+
+`authority_principal_id` identifies the principal whose governed standing or mandate underlies the permission.
+
+`authority_basis_id` identifies the mandate, delegation, entitlement, or equivalent independently governed authority basis relied upon at binding time.
+
+`authorization_issuer_id` identifies the service or principal that produced the bounded authorization artifact.
+
+These roles are distinct from both the requesting actor and the authorized executor.
+
+---
+
+## 5.7 `executor_id`
 
 Example:
 
@@ -354,7 +412,7 @@ REJECT
 
 ---
 
-## 5.7 `action_type`
+## 5.8 `action_type`
 
 Example:
 
@@ -368,7 +426,7 @@ The authorization **MUST** preserve the semantic action type that was governed a
 
 ---
 
-## 5.8 `action_hash`
+## 5.9 `action_hash`
 
 Conceptually:
 
@@ -551,7 +609,19 @@ CurrentAuthorityProof
 
 The authorization records the authority state that justified the decision at binding time.
 
-It does **not** convert that authority into permanent permission.
+That authority state **MUST** be traceable to an independently governed authority basis rather than being inferred from the authorization artifact itself.
+
+Conceptually:
+
+```text
+Authority Principal / Mandate
+        ↓
+Authority State
+        ↓
+Execution Authorization
+```
+
+It does **not** convert that authority into permanent permission or create standing by its own existence.
 
 If authority changes materially before execution, continuity must respond.
 
@@ -1268,6 +1338,9 @@ Corresponding authorization:
   "decision_id": "DEC-1882",
   "action_id": "ACT-2041",
   "actor_id": "Treasury-Agent-01",
+  "authority_principal_id": "Treasury-Manager-17",
+  "authority_basis_id": "TREASURY-MANDATE-01",
+  "authorization_issuer_id": "Governance-Binding-Service-Prod",
   "executor_id": "Payments-Service-Prod",
   "action_type": "transfer_funds",
   "action_hash": "sha256:...",

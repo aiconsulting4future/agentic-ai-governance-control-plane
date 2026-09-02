@@ -261,9 +261,45 @@ Role:
 
 The Treasury Agent does **not** directly possess protected mutation privilege.
 
+It is the **requesting AI actor**, not the originating source of execution authority.
+
 ---
 
-## 5.2 Governance Control Plane
+## 5.2 Authority Principal and Authority Basis
+
+Reference identities:
+
+```text
+authority_principal_id = Treasury-Manager-17
+authority_basis_id     = TREASURY-MANDATE-01
+```
+
+For this scenario, the governed treasury mandate is the authority basis from which permission for the proposed transfer is derived.
+
+The authority principal, requesting AI actor, authorization issuer, and authorized executor are intentionally represented as distinct roles:
+
+```text
+Authority Principal:
+    Treasury-Manager-17
+
+Authority Basis:
+    TREASURY-MANDATE-01
+
+Requesting AI Actor:
+    Treasury-Agent-01
+
+Authorization Issuer:
+    Governance-Binding-Service-Prod
+
+Authorized Executor:
+    Payments-Service-Prod
+```
+
+The execution authorization does not create the authority basis. It is a bounded permission artifact derived from governance state that includes that basis.
+
+---
+
+## 5.3 Governance Control Plane
 
 Responsible for:
 
@@ -278,7 +314,7 @@ It evaluates whether the proposed transfer is eligible to progress.
 
 ---
 
-## 5.3 Binding / Authorization Service
+## 5.4 Binding / Authorization Service
 
 Example identity:
 
@@ -288,9 +324,17 @@ Governance-Binding-Service-Prod
 
 Responsible for producing the bounded execution authorization after an `ALLOW` decision.
 
+For this scenario:
+
+```text
+authorization_issuer_id = Governance-Binding-Service-Prod
+```
+
+The issuer produces the authorization artifact. It is not thereby the source of the authority or standing represented by that artifact.
+
 ---
 
-## 5.4 Payments Service
+## 5.5 Payments Service
 
 ```text
 executor_id = Payments-Service-Prod
@@ -302,7 +346,7 @@ The actor that proposes the action and the executor that creates the consequence
 
 ---
 
-## 5.5 Enforcement Point
+## 5.6 Enforcement Point
 
 Example:
 
@@ -314,7 +358,7 @@ Responsible for ensuring the Payments Service cannot commit the transfer unless 
 
 ---
 
-## 5.6 Protected Resource
+## 5.7 Protected Resource
 
 ```text
 resource_type = bank_account
@@ -331,7 +375,7 @@ Q = Corporate-Account-01 balance
 
 ---
 
-## 5.7 Beneficiary
+## 5.8 Beneficiary
 
 ```text
 beneficiary_id = Vendor-ABC
@@ -343,7 +387,7 @@ Changing the beneficiary changes the governed action.
 
 ---
 
-## 5.8 Human Approver
+## 5.9 Human Approver
 
 Example:
 
@@ -655,19 +699,24 @@ Authentication alone is not sufficient.
 Reference:
 
 ```text
-authority_snapshot_id = AUTH-9841
-authority = CURRENT
+authority_principal_id = Treasury-Manager-17
+authority_basis_id     = TREASURY-MANDATE-01
+authority_snapshot_id  = AUTH-9841
+authority              = CURRENT
 ```
 
-The authority applies to:
+For this scenario, the authority basis permits the governed delegation under which:
 
 ```text
 Treasury-Agent-01
-vendor payment initiation
-Corporate-Account-01
-Enterprise-A
-production
+may request vendor payment initiation
+for Corporate-Account-01
+within Enterprise-A / production
 ```
+
+The requesting AI actor is therefore not treated as the originating source of authority.
+
+The authority basis, requesting actor, authorization issuer, and authorized executor remain separately identifiable.
 
 Historical authority does not automatically mean current authority.
 
@@ -878,6 +927,20 @@ this validity window
 this replay policy
 ```
 
+The authorization derives from the governed authority basis and does not itself create standing:
+
+```text
+Treasury-Manager-17 / TREASURY-MANDATE-01
+        ↓
+Authority State
+        ↓
+Treasury-Agent-01 requests
+        ↓
+Governance-Binding-Service-Prod issues
+        ↓
+Payments-Service-Prod may execute
+```
+
 The authorization statement becomes:
 
 > **Payments-Service-Prod may execute this exact ₹250,000 transfer from Corporate-Account-01 to Vendor-ABC, based on the validated governance state identified in this authorization, before expiry, and subject to continuity validation.**
@@ -895,6 +958,9 @@ Reference:
   "decision_id": "DEC-1882",
   "action_id": "ACT-2041",
   "actor_id": "Treasury-Agent-01",
+  "authority_principal_id": "Treasury-Manager-17",
+  "authority_basis_id": "TREASURY-MANDATE-01",
+  "authorization_issuer_id": "Governance-Binding-Service-Prod",
   "executor_id": "Payments-Service-Prod",
   "action_type": "transfer_funds",
   "action_hash": "sha256:ACTION-2041-HASH",
@@ -938,9 +1004,12 @@ Reference:
 This authorization establishes:
 
 ```text
+Requesting Actor
+Authority Principal / Basis Reference
+Authorization Issuer
 Exact Action
 Resource
-Executor
+Authorized Executor
 Governance-State References
 Policy Version
 Approval Reference
@@ -948,6 +1017,8 @@ Validity Window
 Replay Semantics
 Integrity Protection
 ```
+
+It does not establish authority by its own existence. It carries bounded permission derived from the independently governed authority basis represented in the governance state.
 
 It supports:
 

@@ -151,7 +151,58 @@ RESOURCE_MISMATCH
     → REJECT
 ```
 
-## 4.6 Executor Binding
+## 4.6 Authority, Requester, Issuer, and Executor Are Distinct
+
+Binding does not create authority.
+
+An execution authorization is a **derived permission artifact** whose legitimacy depends on an independently established authority basis.
+
+The architecture therefore distinguishes:
+
+```text
+Authority Principal / Mandate
+        ↓
+Authority State
+        ↓
+Requesting Actor
+        ↓
+Authorization Issuer
+        ↓
+Authorized Executor
+```
+
+These are different roles, even when an implementation allows one identity to occupy more than one role.
+
+For the reference scenario:
+
+```text
+Authority Principal:
+    Treasury-Manager-17
+
+Authority Basis:
+    TREASURY-MANDATE-01
+
+Requesting Actor:
+    Treasury-Agent-01
+
+Authorization Issuer:
+    Governance-Binding-Service-Prod
+
+Authorized Executor:
+    Payments-Service-Prod
+```
+
+The required distinction is:
+
+```text
+Standing ≠ Execution Authorization
+Authority ≠ Execution Authorization
+Execution Authorization ≠ Execution
+```
+
+The authorization **MUST NOT** be treated as the originating source of standing.
+
+## 4.7 Executor Binding
 
 Requesting actor and authorized executor are distinct:
 
@@ -180,7 +231,7 @@ EXECUTOR_MISMATCH
 
 Executor binding does **not** prove that no alternate path exists. That is the route-closure problem.
 
-## 4.7 Governance-State Binding
+## 4.8 Governance-State Binding
 
 Bind stable references or immutable snapshots such as:
 
@@ -197,7 +248,7 @@ approval_id
 
 These references support both continuity validation and later provenance.
 
-## 4.8 Authority-State Binding
+## 4.9 Authority-State Binding
 
 ```text
 BoundAuthoritySnapshot
@@ -205,9 +256,13 @@ BoundAuthoritySnapshot
 CurrentAuthorityProof
 ```
 
-The bound snapshot proves what authority state was relied upon when the authorization was created. It does not prove that authority still holds later.
+The bound snapshot proves what authority state was relied upon when the authorization was created.
 
-## 4.9 Evidence-State Binding
+That state must be attributable to an independently governed authority principal, mandate, delegation, or equivalent authority basis. The authorization artifact records and derives from that basis; it does not create the basis.
+
+It does not prove that authority still holds later.
+
+## 4.10 Evidence-State Binding
 
 ```text
 EvidenceHash =
@@ -224,7 +279,7 @@ EvidenceWasValid_t0
 EvidenceIsValid_t1
 ```
 
-## 4.10 Policy Binding
+## 4.11 Policy Binding
 
 ```text
 PolicyBinding = {
@@ -235,7 +290,7 @@ PolicyBinding = {
 
 The policy basis must remain explicit enough for continuity and provenance.
 
-## 4.11 Human Approval Binding
+## 4.12 Human Approval Binding
 
 Do not reduce approval to:
 
@@ -262,7 +317,7 @@ ApprovedActionHash
 BoundActionHash
 ```
 
-## 4.12 Binding Time and Expiration
+## 4.13 Binding Time and Expiration
 
 ```text
 t_issue
@@ -295,7 +350,7 @@ TTL =
     )
 ```
 
-## 4.13 Replay Protection
+## 4.14 Replay Protection
 
 Use a unique authorization identifier or nonce.
 
@@ -315,7 +370,7 @@ Second Use
     → REPLAY_REJECTED
 ```
 
-## 4.14 Integrity Protection
+## 4.15 Integrity Protection
 
 Conceptually:
 
@@ -333,13 +388,16 @@ Equivalent mechanisms may include asymmetric signatures, signed tokens, keyed MA
 
 > **Material authorization fields must not be modifiable without invalidating the authorization.**
 
-## 4.15 Conceptual Execution Authorization
+## 4.16 Conceptual Execution Authorization
 
 ```json
 {
   "authorization_id": "AUTHZ-7F92",
   "decision_id": "DEC-1882",
   "actor_id": "Treasury-Agent-01",
+  "authority_principal_id": "Treasury-Manager-17",
+  "authority_basis_id": "TREASURY-MANDATE-01",
+  "authorization_issuer_id": "Governance-Binding-Service-Prod",
   "executor_id": "Payments-Service-Prod",
   "action_type": "transfer_funds",
   "action_hash": "sha256:...",
@@ -371,7 +429,7 @@ Equivalent mechanisms may include asymmetric signatures, signed tokens, keyed MA
 
 This schema is illustrative rather than normative.
 
-## 4.16 Binding Does Not Create Permanent Permission
+## 4.17 Binding Does Not Create Permanent Permission
 
 Between binding and execution, governance-relevant conditions may change.
 
@@ -385,7 +443,7 @@ NecessarilyExecutable_t1
 
 Binding proves what was authorized. It does not prove that the authorization remains executable later.
 
-## 4.17 Binding State Machine
+## 4.18 Binding State Machine
 
 ```text
 ALLOW
@@ -401,7 +459,7 @@ BINDING
 
 Only `BOUND` may proceed to continuity.
 
-## 4.18 Binding Invariants
+## 4.19 Binding Invariants
 
 ### Invariant C3 — Exact Action Binding
 
@@ -453,15 +511,17 @@ NOT Reusable(AuthZ_id)
 
 Enforcement must be atomic.
 
-## 4.19 What Binding Proves — and What It Does Not
+## 4.20 What Binding Proves — and What It Does Not
 
 Binding can establish that a governance decision applies to:
 
 - a specific decision;
-- a specific actor;
+- a specific requesting actor;
+- an identified authority principal and authority basis where material;
 - a specific action;
 - a specific protected resource;
-- a specific executor;
+- an identified authorization issuer;
+- a specific authorized executor;
 - specific governance-state references;
 - a specific policy version;
 - a specific approval;
@@ -471,6 +531,7 @@ Binding can establish that a governance decision applies to:
 
 Binding does **not** by itself prove:
 
+- that the authorization artifact is the source of standing or authority;
 - that authority is still current;
 - that evidence is still valid;
 - that approval has not been revoked;
@@ -479,7 +540,7 @@ Binding does **not** by itself prove:
 - that the executor remains trustworthy;
 - that an alternate execution path does not exist.
 
-## 4.20 Binding Architecture
+## 4.21 Binding Architecture
 
 <!-- IMAGE PLACEHOLDER: FIGURE 4 -->
 
@@ -487,7 +548,7 @@ Binding does **not** by itself prove:
 
 **Figure 4 — Binding: From ALLOW to Bounded Execution Authorization.**
 
-## 4.21 Section 4 Conclusion
+## 4.22 Section 4 Conclusion
 
 Admissibility asks:
 
