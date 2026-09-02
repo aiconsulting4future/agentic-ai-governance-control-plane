@@ -1031,6 +1031,6 @@ Decision Provenance ✓ Section 8
 
 ## Continue
 
-**Next:** [Return to Architecture Index](README.MD)
+**Next:** [Return to Architecture Index](README.md)
 
-**Return to Main Repository:** [The Agentic AI Governance Control Plane](../README.MD)
+**Return to Main Repository:** [The Agentic AI Governance Control Plane](../README.md)

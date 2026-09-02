@@ -179,7 +179,7 @@ The core architecture is divided into eight focused documents.
 | **07** | [Route Closure](docs/07-route-closure.md) | Whether alternate consequence-bearing paths can bypass governance |
 | **08** | [Decision Provenance](docs/08-decision-provenance.md) | How legitimacy is reconstructed after consequence |
 
-### [Explore the complete architecture index →](docs/README.MD)
+### [Explore the complete architecture index →](docs/README.md)
 
 ---
 
@@ -196,7 +196,7 @@ The specification layer translates the architecture into explicit implementation
 | [Enforcement Contract](specifications/enforcement-contract.md) | How protected mutation becomes technically dependent on valid governance proof |
 | [Provenance Contract](specifications/provenance-contract.md) | How the decision-to-outcome chain remains reconstructable and tamper-evident |
 
-### [Explore the complete specifications index →](specifications/README.MD)
+### [Explore the complete specifications index →](specifications/README.md)
 
 The specification flow is:
 
@@ -224,7 +224,7 @@ Provenance Contract
 
 The architecture and specifications are applied together in the repository's first complete practical scenario:
 
-### [Bank Transfer Reference Scenario →](examples/bank-transfer/README.MD)
+### [Bank Transfer Reference Scenario →](examples/bank-transfer/README.md)
 
 The scenario governs a high-consequence action:
 
@@ -555,7 +555,7 @@ These invariants are no longer only architectural statements. Their normative sp
 
 The broader specification index is available here:
 
-### [Specifications Index →](specifications/README.MD)
+### [Specifications Index →](specifications/README.md)
 
 The objective is that every material architectural claim becomes one of the following:
 
@@ -570,7 +570,7 @@ The objective is that every material architectural claim becomes one of the foll
 
 The repository now includes a complete end-to-end practical specification for the architecture:
 
-## [Bank Transfer Reference Scenario →](examples/bank-transfer/README.MD)
+## [Bank Transfer Reference Scenario →](examples/bank-transfer/README.md)
 
 Reference action:
 
@@ -719,9 +719,9 @@ agentic-ai-governance-control-plane/
 
 ### Repository Entry Points
 
-- **Architecture:** [docs/README.md](docs/README.MD)
-- **Specifications:** [specifications/README.md](specifications/README.MD)
-- **Practical Reference Scenario:** [examples/bank-transfer/README.md](examples/bank-transfer/README.MD)
+- **Architecture:** [docs/README.md](docs/README.md)
+- **Specifications:** [specifications/README.md](specifications/README.md)
+- **Practical Reference Scenario:** [examples/bank-transfer/README.md](examples/bank-transfer/README.md)
 
 ---
 
@@ -957,11 +957,11 @@ If you are approaching this project from an **AI governance or enterprise leader
 
 If you want the **complete architecture**:
 
-**[Open the Architecture Index →](docs/README.MD)**
+**[Open the Architecture Index →](docs/README.md)**
 
 If you are approaching it from an **AI architecture or engineering perspective**:
 
-**[Open the Specifications Index →](specifications/README.MD)**
+**[Open the Specifications Index →](specifications/README.md)**
 
 If you want to understand the **formal control properties**:
 

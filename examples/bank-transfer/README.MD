@@ -2617,7 +2617,7 @@ This document is the canonical end-to-end reference scenario for **The Agentic A
 
 ## Related Architecture
 
-- [Reference Architecture Index](../../docs/README.MD)
+- [Reference Architecture Index](../../docs/README.md)
 - [Section 1 — Why This Capstone Exists](../../docs/01-why-this-capstone-exists.md)
 - [Section 2 — From Model Risk to Consequence Risk](../../docs/02-from-model-risk-to-consequence-risk.md)
 - [Section 3 — Runtime Admissibility](../../docs/03-runtime-admissibility.md)
@@ -2627,4 +2627,4 @@ This document is the canonical end-to-end reference scenario for **The Agentic A
 - [Section 7 — Route Closure](../../docs/07-route-closure.md)
 - [Section 8 — Decision Provenance](../../docs/08-decision-provenance.md)
 
-**Return to Main Repository:** [The Agentic AI Governance Control Plane](../../README.MD)
+**Return to Main Repository:** [The Agentic AI Governance Control Plane](../../README.md)

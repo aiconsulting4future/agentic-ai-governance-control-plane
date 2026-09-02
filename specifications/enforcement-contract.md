@@ -1843,7 +1843,7 @@ This document is the canonical enforcement specification for **The Agentic AI Go
 
 ## Related Architecture
 
-- [Reference Architecture Index](../docs/README.MD)
+- [Reference Architecture Index](../docs/README.md)
 - [Section 2 — From Model Risk to Consequence Risk](../docs/02-from-model-risk-to-consequence-risk.md)
 - [Section 3 — Runtime Admissibility](../docs/03-runtime-admissibility.md)
 - [Section 4 — Binding](../docs/04-binding.md)
@@ -1852,4 +1852,4 @@ This document is the canonical enforcement specification for **The Agentic AI Go
 - [Section 7 — Route Closure](../docs/07-route-closure.md)
 - [Section 8 — Decision Provenance](../docs/08-decision-provenance.md)
 
-**Return to Main Repository:** [The Agentic AI Governance Control Plane](../README.MD)
+**Return to Main Repository:** [The Agentic AI Governance Control Plane](../README.md)

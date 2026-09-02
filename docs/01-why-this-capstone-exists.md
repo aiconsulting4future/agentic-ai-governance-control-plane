@@ -270,4 +270,4 @@ The contribution is therefore not any one underlying mechanism in isolation. It 
 
 **Next Section:** [Section 2 — From Model Risk to Consequence Risk](02-from-model-risk-to-consequence-risk.md)
 
-**Return to Main:** [Architecture Index](README.MD)
+**Return to Main:** [Architecture Index](README.md)

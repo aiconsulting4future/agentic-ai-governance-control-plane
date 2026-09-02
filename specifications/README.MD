@@ -470,8 +470,8 @@ The specification layer is now complete for **The Agentic AI Governance Control 
 
 ## Continue
 
-**Practical Reference:** [Bank Transfer Reference Scenario](../examples/bank-transfer/README.MD)
+**Practical Reference:** [Bank Transfer Reference Scenario](../examples/bank-transfer/README.md)
 
-**Architecture:** [Reference Architecture Index](../docs/README.MD)
+**Architecture:** [Reference Architecture Index](../docs/README.md)
 
-**Return to Main Repository:** [The Agentic AI Governance Control Plane](../README.MD)
+**Return to Main Repository:** [The Agentic AI Governance Control Plane](../README.md)

@@ -1924,10 +1924,10 @@ This document is the canonical execution-authorization specification for **The A
 
 - [Architectural Invariants](invariants.md)
 - [Action Contract](action-contract.md)
-- [Reference Architecture Index](../docs/README.MD)
+- [Reference Architecture Index](../docs/README.md)
 - [Section 3 — Runtime Admissibility](../docs/03-runtime-admissibility.md)
 - [Section 4 — Binding](../docs/04-binding.md)
 - [Section 5 — Continuity](../docs/05-continuity.md)
 - [Section 6 — Enforcement](../docs/06-enforcement.md)
 
-**Return to Main Repository:** [The Agentic AI Governance Control Plane](../README.MD)
+**Return to Main Repository:** [The Agentic AI Governance Control Plane](../README.md)

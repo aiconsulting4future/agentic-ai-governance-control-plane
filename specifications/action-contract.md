@@ -1335,9 +1335,9 @@ This document is the canonical action-contract specification for **The Agentic A
 ## Related Specifications
 
 - [Architectural Invariants](invariants.md)
-- [Reference Architecture Index](../docs/README.MD)
+- [Reference Architecture Index](../docs/README.md)
 - [Section 2 — From Model Risk to Consequence Risk](../docs/02-from-model-risk-to-consequence-risk.md)
 - [Section 3 — Runtime Admissibility](../docs/03-runtime-admissibility.md)
 - [Section 4 — Binding](../docs/04-binding.md)
 
-**Return to Main Repository:** [The Agentic AI Governance Control Plane](../README.MD)
+**Return to Main Repository:** [The Agentic AI Governance Control Plane](../README.md)
