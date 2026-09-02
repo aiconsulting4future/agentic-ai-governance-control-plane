@@ -1170,6 +1170,8 @@ Conceptually:
 ```text
 Execution Authorization
         +
+Current Underlying Authority Basis
+        +
 Current Governance State
         +
 Current Execution Context
@@ -1188,6 +1190,8 @@ REJECT
 ```
 
 The authorization object itself **MUST NOT** claim that historical governance state remains current.
+
+Where authority is material, continuity **MUST** establish the current validity of the independently governed authority basis referenced by the authorization. Integrity, binding, or temporal validity of the authorization artifact alone **MUST NOT** substitute for that check.
 
 ---
 
@@ -1899,6 +1903,7 @@ A valid bounded authorization can establish that, at binding time:
 
 The authorization does **not** itself prove:
 
+- that the underlying authority basis remains current;
 - that authority remains current;
 - that evidence remains valid;
 - that approval has not been revoked;

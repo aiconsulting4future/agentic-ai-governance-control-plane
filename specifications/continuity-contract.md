@@ -50,6 +50,8 @@ REJECT
 
 The continuity contract closes the temporal gap between historical authorization and present execution legitimacy.
 
+For authority-dependent execution, continuity evaluates both the bounded authorization artifact and the independently governed authority basis from which that permission was derived. A valid, unexpired, or integrity-valid authorization artifact alone does **not** establish current authority.
+
 ---
 
 ## 2. Architectural Role
@@ -176,6 +178,8 @@ A conceptual request object is:
   "evaluation_time": "2026-08-24T08:02:30Z",
   "bound_governance_state": {
     "identity_snapshot_id": "ID-772",
+    "authority_principal_id": "Treasury-Manager-17",
+    "authority_basis_id": "TREASURY-MANDATE-01",
     "authority_snapshot_id": "AUTH-9841",
     "evidence_snapshot_id": "EVD-225",
     "scope_snapshot_id": "SCP-773",
@@ -186,6 +190,7 @@ A conceptual request object is:
   },
   "current_state": {
     "identity": "CURRENT",
+    "authority_basis": "CURRENT",
     "authority": "CURRENT",
     "evidence": "CURRENT",
     "scope": "IN_SCOPE",
@@ -233,7 +238,7 @@ where:
 | Symbol | Continuity Dimension |
 |---|---|
 | `I_t` | Identity / standing |
-| `U_t` | Authority |
+| `U_t` | Authority / underlying authority basis |
 | `E_t` | Evidence |
 | `S_t` | Scope / delegation |
 | `P_t` | Policy |
@@ -268,6 +273,7 @@ Example:
   "evaluated_at": "2026-08-24T08:02:30Z",
   "dimensions": {
     "identity": "CURRENT",
+    "authority_basis": "CURRENT",
     "authority": "CURRENT",
     "evidence": "CURRENT",
     "scope": "IN_SCOPE",
@@ -354,22 +360,38 @@ A historical identity or standing snapshot **MUST NOT** automatically establish 
 
 Authority is a primary continuity dimension.
 
-At binding:
+At binding, the authorization preserves both the authority state relied upon and the independently governed basis from which that permission was derived:
 
 ```text
-authority_snapshot_id = AUTH-9841
+authority_principal_id = Treasury-Manager-17
+authority_basis_id     = TREASURY-MANDATE-01
+authority_snapshot_id  = AUTH-9841
 ```
 
-At execution:
+At execution, continuity must evaluate the current standing of that authority basis rather than infer authority from possession, signature validity, or temporal validity of the authorization artifact.
+
+Conceptually:
 
 ```text
 AuthorityContinuity =
     CheckCurrentAuthority(
+        authority_principal,
+        authority_basis,
         actor,
         action,
         resource,
         bound_authority_snapshot
     )
+```
+
+The required relationship is:
+
+```text
+Execution Authorization
+        +
+Current Underlying Authority Basis
+        ↓
+Authority Continuity
 ```
 
 Possible states:
@@ -404,6 +426,10 @@ Policy may define the exact mapping for `WEAKENED` or `ABSENT`.
 ### Requirement
 
 > **A previously valid authority state must not automatically survive a material authority change.**
+
+The continuity service **MUST** establish current validity of the underlying authority basis when authority is material to execution.
+
+A cryptographically valid, correctly bound, and unexpired execution authorization **MUST NOT** be treated as sufficient proof of current authority if the authority basis has been revoked, materially changed, or cannot be established to the level required by policy.
 
 ---
 
@@ -1006,6 +1032,7 @@ Exact action matches
 Executor matches
 Authorization unexpired
 Authorization unconsumed
+Underlying authority basis current
 Authority current
 Approval current
 Required evidence valid
@@ -1026,6 +1053,8 @@ The Execution Authorization Contract supplies:
 authorization_id
 action_id
 action_hash
+authority_principal_id
+authority_basis_id
 executor_id
 resource binding
 bound governance-state references
@@ -1037,10 +1066,14 @@ integrity proof
 
 The Continuity Contract evaluates whether those bound conditions remain usable now.
 
+For authority-dependent execution, this includes the current state of the independently governed authority basis referenced by the authorization.
+
 Conceptually:
 
 ```text
 Historical Bound State
+        +
+Current Underlying Authority Basis
         +
 Current State
         ↓
@@ -1100,12 +1133,15 @@ A conceptual record may include:
   "evaluated_at": "2026-08-24T08:02:30Z",
   "result": "VALID",
   "bound_state_refs": {
+    "authority_principal_id": "Treasury-Manager-17",
+    "authority_basis_id": "TREASURY-MANDATE-01",
     "authority_snapshot_id": "AUTH-9841",
     "evidence_snapshot_id": "EVD-225",
     "approval_id": "APR-118",
     "policy_version": 17
   },
   "current_state_refs": {
+    "authority_basis_state_id": "AUTHBASISSTATE-117",
     "authority_state_id": "AUTHSTATE-992",
     "evidence_state_id": "EVDSTATE-331",
     "approval_state_id": "APRSTATE-201",
@@ -1870,6 +1906,10 @@ The future implementation should include tests such as:
 test_bound_authorization_with_unchanged_state_is_valid()
 
 test_revoked_authority_rejects_continuity()
+
+test_valid_authorization_with_revoked_authority_basis_rejected()
+
+test_unresolved_required_authority_basis_does_not_validate()
 
 test_uncertain_authority_does_not_inherit_validity()
 

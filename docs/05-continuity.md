@@ -32,6 +32,8 @@ Valid at execution time
 
 Continuity is the mechanism that closes this temporal gap.
 
+For authority-dependent actions, continuity must re-establish the current validity of the authority basis from which the bounded permission was derived. The authorization artifact itself is not the source of standing.
+
 It asks:
 
 > **Do the governance conditions that justified this authorization still hold when the system is ready to create consequence?**
@@ -229,7 +231,7 @@ where:
 | Symbol | Continuity Dimension            |
 | ------ | ------------------------------- |
 | `I_t`  | Identity / standing             |
-| `U_t`  | Authority                       |
+| `U_t`  | Authority / underlying authority basis |
 | `E_t`  | Evidence                        |
 | `S_t`  | Scope / delegation              |
 | `P_t`  | Policy                          |
@@ -303,26 +305,40 @@ depending on policy.
 
 Authority is one of the most important continuity dimensions.
 
-At binding:
+At binding, the authorization records the authority state and the independently governed basis from which permission was derived:
 
 ```text
-authority_snapshot_id = AUTH-9841
+authority_principal_id = Treasury-Manager-17
+authority_basis_id     = TREASURY-MANDATE-01
+authority_snapshot_id  = AUTH-9841
 ```
 
 The authorization proves that this authority state supported the decision at `t0`.
 
-At execution, the system must determine whether the relevant authority remains current.
+It does **not** create the underlying standing and does not prove that the authority basis remains valid at `t1`.
+
+At execution, the system must determine whether the relevant authority basis and resulting authority remain current.
 
 Conceptually:
 
 ```text
 AuthorityContinuity =
     CheckCurrentAuthority(
+        authority_principal,
+        authority_basis,
         actor,
         action,
         resource,
         bound_authority_snapshot
     )
+```
+
+Therefore:
+
+```text
+Valid Execution Authorization
+        ≠
+Current Authority Proof
 ```
 
 Possible outcomes:
@@ -356,6 +372,8 @@ The exact outcome is policy-specific.
 The architectural requirement is not.
 
 > **A previously valid authority state must not automatically survive a material authority change.**
+
+Where authority is material, continuity must establish current validity of the underlying authority basis. Possession of a correctly signed, correctly bound, and unexpired authorization is not sufficient when that basis has been revoked, materially changed, or cannot be established to the level required by policy.
 
 ---
 
@@ -972,6 +990,7 @@ Exact action matches
 Executor matches
 Authorization unexpired
 Authorization unconsumed
+Underlying authority basis current
 Authority current
 Approval current
 Required evidence valid
@@ -1103,6 +1122,7 @@ A validation result from an earlier point in time is insufficient if material st
 Continuity can establish that:
 
 - the relevant identity and standing remain valid;
+- the underlying authority basis remains valid where required;
 - authority remains current;
 - evidence remains usable;
 - scope remains compatible;
