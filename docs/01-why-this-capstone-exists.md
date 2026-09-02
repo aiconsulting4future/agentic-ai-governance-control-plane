@@ -233,6 +233,37 @@ Every architectural claim in this document should eventually be one of the follo
 
 This capstone is therefore not a summary of seven articles. It consolidates the series into an implementable reference architecture whose claims can later be expressed as system invariants, enforcement mechanisms, and executable tests.
 
+## 1.6 Contribution Boundary
+
+This architecture builds on established ideas from security, authorization, distributed systems, and auditability. It does **not** claim invention of mechanisms such as complete mediation, authorization binding, revocation, TOCTOU protection, fail-closed enforcement, execution-time validation, or provenance.
+
+Its contribution is the integration and decomposition of these obligations for consequence-bearing Agentic AI into a single runtime governance model:
+
+```text
+Admissibility
+    ↓
+Binding
+    ↓
+Continuity
+    ↓
+Enforcement
+    ↓
+Route Closure
+    ↓
+Execution
+    ↓
+Provenance
+```
+
+That model is made concrete through:
+
+- the C1–C15 architectural invariants;
+- explicit normative contracts;
+- reference scenarios;
+- and executable proof obligations.
+
+The contribution is therefore not any one underlying mechanism in isolation. It is the control-plane structure that connects them from proposed action to governed consequence.
+
 ---
 
 ## Continue

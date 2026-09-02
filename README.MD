@@ -785,6 +785,10 @@ Its objective is narrower:
 
 > **Define the control conditions under which an AI-originated action may become an enterprise consequence.**
 
+The architecture does not claim invention of the underlying security, authorization, distributed-systems, or provenance mechanisms it draws upon. Its contribution is the way those obligations are integrated and made explicit for consequence-bearing Agentic AI through the control chain, C1–C15 invariants, normative contracts, reference scenarios, and executable proof obligations.
+
+See [Section 1 — Why This Capstone Exists](docs/01-why-this-capstone-exists.md) for the contribution boundary in context.
+
 ---
 
 # Design Philosophy
