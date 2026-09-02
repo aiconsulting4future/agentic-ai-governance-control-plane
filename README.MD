@@ -570,7 +570,7 @@ The objective is that every material architectural claim becomes one of the foll
 
 The repository now includes a complete end-to-end practical specification for the architecture:
 
-## [Bank Transfer Reference Scenario →](examples/bank-transfer/README.md)
+## [Bank Transfer Reference Scenario →](examples/bank-transfer/README.MD)
 
 Reference action:
 
