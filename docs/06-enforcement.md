@@ -550,7 +550,38 @@ ROLLBACK
 
 The exact ordering of writes inside the protected operation is implementation-specific. What matters is that they participate in atomic or equivalently protected commit semantics and that the linearization point is explicit.
 
-This clarification defines the commit model. Detailed retry, timeout, crash-recovery, and concurrent-race behavior is an implementation and test obligation built on top of that model.
+This commit model also establishes the reference point for failure semantics.
+
+The architecture distinguishes three broad cases:
+
+```text
+Failure before linearization point
+    → no committed consequence
+
+Failure after linearization point
+    → consequence may already be committed
+
+Failure status uncertain
+    → determine commit state before any retry that could duplicate consequence
+```
+
+Therefore:
+
+```text
+Request failed
+    ≠
+Consequence did not occur
+```
+
+and:
+
+```text
+No receipt observed
+    ≠
+No protected mutation occurred
+```
+
+Retry, timeout, crash-recovery, and concurrent-race behavior must preserve those distinctions.
 
 ---
 
@@ -597,6 +628,10 @@ All others receive:
 REPLAY_REJECTED
 ```
 
+For concurrent attempts using the same single-use authorization, the protected commit semantics must ensure that at most one attempt can cross the linearization point for that authorization.
+
+A retry following timeout or loss of response must not be treated as a fresh execution merely because the caller did not observe the first result. The implementation should first resolve whether the original attempt committed, using an execution identifier, idempotency key, authorization-consumption state, authoritative journal, protected-resource state, or an equivalent mechanism appropriate to the execution system.
+
 This converts replay protection from an audit field into an actual control.
 
 ---
@@ -638,6 +673,8 @@ CurrentVersion
 may be required for selected actions.
 
 This is one mechanism for reducing time-of-check / time-of-use risk.
+
+The same principle applies when governance state can race the commit. If a revocation, authority change, or resource-state change becomes effective before the protected operation's linearization point, commit-time validation must prevent the consequence where that change is material. A state change that becomes effective only after the linearization point cannot retroactively make an already committed consequence uncommitted; it instead becomes part of subsequent governance and provenance.
 
 ---
 
@@ -867,6 +904,8 @@ authorization_consumed
 This is not yet the complete provenance record.
 
 It is the execution-layer evidence required by the later accountability stage.
+
+Receipt absence must be interpreted carefully. A transport timeout, process crash, or receipt-write failure after the linearization point can leave the caller uncertain even though protected mutation succeeded. In that state, the system must not assume that the action failed and blindly retry. It should recover authoritative execution state and emit or reconstruct durable execution evidence without creating a second consequence.
 
 ---
 

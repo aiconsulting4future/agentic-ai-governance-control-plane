@@ -1375,6 +1375,10 @@ incident_declared
 
 Where such events are available and material, the architecture should allow them to influence continuity before execution.
 
+If a material revocation or governance-state change becomes effective before the protected operation's linearization point, the state used for commit-time continuity must reflect that change to the level required by the implementation's authority-consistency model.
+
+A stale authority replica, delayed cache, or conflicting current-state source **MUST NOT** be interpreted as current proof when policy requires a fresher or authoritative source. If required current state cannot be established, continuity must resolve to a non-`VALID` state.
+
 Conceptually:
 
 ```text
@@ -1484,6 +1488,10 @@ with atomic or equivalent semantics.
 ### Requirement
 
 Concurrency must not allow a continuity state that was valid for one execution to create multiple protected consequences when the authorization is single-use.
+
+Where two execution attempts race, continuity alone does not select the winner. Enforcement and commit semantics must ensure that at most one attempt can cross the linearization point for the same single-use authorization.
+
+A retry after timeout must not treat a previously observed `UNUSED` state as proof that no earlier attempt committed.
 
 ---
 

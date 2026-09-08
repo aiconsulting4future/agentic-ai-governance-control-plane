@@ -761,7 +761,37 @@ ROLLBACK
 
 The order of internal writes may differ where the protected system uses different atomicity mechanisms. The contract requires an equivalent single commit boundary, not this exact transaction sequence.
 
-Detailed retry, timeout, crash-recovery, and concurrent-race semantics are separate implementation obligations built on top of this commit model.
+The linearization point also defines how execution failures are interpreted.
+
+```text
+Before linearization point
+    → protected consequence has not committed
+
+After linearization point
+    → protected consequence is committed even if acknowledgement,
+      receipt delivery, or caller response later fails
+
+Commit state cannot be established
+    → outcome is UNKNOWN until authoritative recovery resolves it
+```
+
+Therefore:
+
+```text
+Request failure
+    ≠
+Proof of no consequence
+```
+
+and:
+
+```text
+Missing receipt
+    ≠
+Proof of no mutation
+```
+
+Retry, timeout, crash-recovery, and concurrent-race semantics **MUST** preserve these distinctions.
 
 ---
 
@@ -812,6 +842,12 @@ REPLAY_REJECTED
 
 Replay protection must function as an execution control, not merely an audit field.
 
+For one single-use authorization, concurrent attempts **MUST NOT** produce more than one committed protected consequence.
+
+If an execution attempt times out or loses its response after it may have crossed the linearization point, the caller or retry coordinator **MUST NOT** assume non-execution. The implementation must first resolve or safely deduplicate the prior attempt using an execution identifier, idempotency key, consumed-authorization state, authoritative execution journal, protected-resource state, or equivalent mechanism.
+
+An unresolved prior attempt must not be converted into permission for an uncoordinated second commit.
+
 ---
 
 # 23. State-Version Enforcement
@@ -853,6 +889,10 @@ may be a required commit precondition.
 ### Requirement
 
 Where resource version affects execution legitimacy, enforcement **MUST** verify the required version semantics before mutation.
+
+Where authority, revocation, approval, policy, or protected-resource state can change concurrently with commit, the implementation must define which authoritative state is valid at the linearization point. A stale replica or cache **MUST NOT** be accepted as current proof when policy requires fresher or authoritative state.
+
+If conflicting current-state sources cannot be resolved to the level required by policy before the linearization point, protected mutation **MUST NOT** proceed.
 
 ---
 
@@ -1088,6 +1128,8 @@ Protected mutation succeeds
 Receipt silently lost
 ```
 
+The architecture distinguishes **commit state** from **observation of commit state**. A timeout, process crash, transport failure, or receipt-write failure after the linearization point does not reverse a committed consequence.
+
 For high-consequence operations, an implementation may use:
 
 ```text
@@ -1095,12 +1137,23 @@ transactional receipt write
 outbox pattern
 durable event log
 append-only execution journal
+idempotent execution record
 equivalent recovery-safe mechanism
 ```
 
 ### Requirement
 
 A successful protected mutation should produce durable execution evidence consistent with the Provenance Contract.
+
+If receipt emission fails after commit, the implementation **MUST NOT** manufacture a second protected consequence merely to obtain a clean response. It should recover or reconstruct execution evidence from authoritative state.
+
+Where the system cannot immediately determine whether commit occurred, it should expose an explicit indeterminate execution state such as:
+
+```text
+COMMIT_STATUS_UNKNOWN
+```
+
+until recovery establishes `COMMITTED` or `NOT_COMMITTED`.
 
 ---
 
@@ -1602,10 +1655,14 @@ EnforceProtectedMutation(
 
     require CommitConditionsStillValid()
 
-    atomically:
+    atomically or with equivalent protected commit semantics:
         reserve / consume authorization
         apply protected mutation
-        emit execution receipt
+        record recoverable execution identity
+
+    cross linearization point
+
+    emit or recover execution receipt
 
     return COMMIT
 ```

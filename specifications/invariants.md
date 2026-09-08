@@ -303,6 +303,8 @@ Consumption state **MUST** be enforced atomically with the protected execution s
 
 A second use of a consumed single-use authorization **MUST NOT** create a second protected consequence.
 
+Concurrent or retried attempts using the same single-use authorization must preserve the same invariant: at most one attempt may create the protected consequence, including when the caller is uncertain whether a prior attempt committed.
+
 ### Failure condition
 
 C6 fails if the same single-use authorization can create the protected consequence more than once.
@@ -393,6 +395,8 @@ ContinuityValid(a, t_commit)
 For consequence classes that require continuity validation, the implementation **MUST** establish required current-state validity sufficiently close to the protected mutation that a stale earlier result cannot silently authorize consequence.
 
 For C8, `t_commit` denotes the protected operation's implementation-defined **linearization point**: the point at which that governed operation becomes the committed consequence. Commit-time revalidation must therefore be coordinated with the same protected commit semantics rather than treated as an earlier detached check.
+
+If a material governance change, revocation, or conflicting protected-resource state becomes effective before `t_commit`, stale earlier state must not satisfy C8. Where the current authoritative state cannot be established to the level required by policy, protected mutation must not occur.
 
 ### Failure condition
 
@@ -831,6 +835,18 @@ A future implementation matrix may take the form:
 | C15 | Provenance integrity mechanism | `test_provenance_tampering_detected` | Integrity failure | Planned |
 
 The test names above are illustrative until the implementation structure is finalized.
+
+Additional failure-semantics stress tests should exercise the same existing invariants without creating new invariant IDs:
+
+```text
+test_concurrent_replay_only_one_commits
+test_revocation_racing_commit
+test_timeout_after_commit_does_not_duplicate_consequence
+test_crash_after_mutation_preserves_recoverable_execution
+test_stale_authority_replica_fails_safe
+```
+
+These tests principally stress C6, C8, C10, C13, and C14 across the linearization and recovery boundary.
 
 ---
 

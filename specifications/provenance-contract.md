@@ -598,6 +598,20 @@ The execution receipt should describe what actually occurred at the consequence 
 
 It must not merely repeat what the system intended to occur.
 
+A caller-visible timeout, transport error, or process failure is not itself evidence that the consequence did not commit. Provenance must preserve the distinction between:
+
+```text
+request / acknowledgement state
+```
+
+and:
+
+```text
+authoritative commit / execution state
+```
+
+Where commit status is initially unknown, provenance should record that uncertainty until authoritative recovery resolves it rather than fabricating either success or failure.
+
 ---
 
 # 15. Outcome Provenance
@@ -971,6 +985,8 @@ execution receipt
 ```
 
 and make that guarantee explicit.
+
+The guarantee should also identify how the system determines whether the linearization point was crossed when acknowledgement or receipt delivery fails. Recovery must preserve the semantic identity of the original execution and must not create a duplicate consequence merely to repair missing provenance.
 
 ---
 
@@ -2528,7 +2544,21 @@ Event ingestion should preserve semantic identity.
 
 # 84. Recovery
 
-If an execution receipt is temporarily unavailable but can be reconstructed from an authoritative execution journal, the provenance layer may later repair the lineage.
+If an execution receipt is temporarily unavailable but can be reconstructed from an authoritative execution journal, protected-resource history, idempotent execution record, or equivalent authoritative source, the provenance layer may later repair the lineage.
+
+Recovery must distinguish:
+
+```text
+No receipt observed
+```
+
+from:
+
+```text
+No protected mutation occurred
+```
+
+A crash or timeout after the linearization point may produce the first condition while the second is false.
 
 ### Requirement
 
@@ -2547,6 +2577,8 @@ record reconstructed later
 ```
 
 where that distinction matters.
+
+Recovery **MUST NOT** create a new protected consequence solely to replace missing evidence for an earlier attempt. The recovered record should preserve the original execution identity wherever authoritative state can establish it.
 
 ---
 
@@ -2616,7 +2648,7 @@ The contract is semantic, not vendor-specific.
 
 # 88. What Provenance Proves
 
-Decision provenance can establish that:
+Decision provenance can establish, when the required execution evidence is available or authoritatively recovered, that:
 
 - a specific action was proposed;
 - a specific actor originated it;
