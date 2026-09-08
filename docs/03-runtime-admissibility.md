@@ -125,6 +125,26 @@ CorrectReasoning ≠ ValidEvidence
 
 A model can reason correctly from stale evidence. Governance must therefore treat evidence state as an independent input.
 
+Evidence may originate from internal systems, enterprise records, policy services, human approvals, or external runtime measurement providers.
+
+The architecture distinguishes the evidence-producing function from the governance-decision function:
+
+```text
+Runtime Measurement / Observation
+        ↓
+Structured Evidence
+        ↓
+Governance Interpretation
+        ↓
+ALLOW / HOLD / ESCALATE / DENY
+```
+
+> **Measurement evidence is descriptive. Governance interpretation is normative.**
+
+A measurement provider may report states such as stability, drift, coherence, coverage, latency, confidence, freshness, or other implementation-defined runtime signals. Those signals **MUST NOT** themselves be treated as an admissibility decision unless the provider is explicitly part of the governance decision authority.
+
+The governance control plane remains responsible for interpreting evidence together with authority, scope, policy, risk, approval, consequence, and other governed state.
+
 ## 3.6 Gate 5 — Scope and Delegation
 
 ```text
@@ -259,7 +279,11 @@ A practical rule hierarchy:
        → ALLOW
 ```
 
-LLMs may assist interpretation, extraction, classification, evidence synthesis, or candidate policy mapping. The final governance state transition should come from explicit rules over governed state.
+LLMs may assist interpretation, extraction, classification, evidence synthesis, or candidate policy mapping. External measurement systems may likewise supply structured, signed, versioned, or otherwise verifiable runtime evidence.
+
+Neither the model nor an external evidence provider should implicitly become the governance decision-maker merely by producing a signal.
+
+The final governance state transition should come from explicit rules over governed state.
 
 ## 3.11 The Four Outcomes
 
@@ -342,6 +366,8 @@ ALLOW_t0 ≠ automatically ALLOW_t1
 **Figure 3 — Runtime Admissibility: What Must Be True Before an Action Can Proceed?**
 
 ## 3.16 Section 3 Conclusion
+
+Runtime admissibility consumes evidence; it does not delegate governance authority to the system that produced that evidence.
 
 Runtime admissibility asks:
 

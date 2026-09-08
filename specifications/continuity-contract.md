@@ -68,6 +68,12 @@ Runtime governance interpretation
 
 A current observation **MUST NOT** be treated as execution permission merely because it is recent, accurate, or cryptographically verifiable. The continuity service must determine what that state means for the legitimacy of the pending consequence.
 
+Runtime observations may be produced by internal systems or external measurement providers. Such providers may supply descriptive evidence including stability, drift, coherence, coverage, latency, freshness, confidence, or other implementation-defined runtime measurements.
+
+> **Measurement evidence is descriptive. Governance interpretation is normative.**
+
+External evidence **MUST NOT** directly determine a continuity outcome merely because it is signed, versioned, current, or machine-readable. The continuity service remains responsible for interpreting that evidence under the applicable governance policy and consequence context.
+
 For authority-dependent execution, continuity evaluates both the bounded authorization artifact and the independently governed authority basis from which that permission was derived. A valid, unexpired, or integrity-valid authorization artifact alone does **not** establish current authority.
 
 ---
@@ -457,6 +463,8 @@ A cryptographically valid, correctly bound, and unexpired execution authorizatio
 
 Evidence used at admissibility may become stale, superseded, conflicted, or invalid.
 
+Evidence may also be supplied by an external runtime measurement provider. Where such evidence is used, the continuity contract treats the provider as an evidence source, not as the governance decision authority.
+
 Example:
 
 ```text
@@ -485,6 +493,8 @@ STALE
 SUPERSEDED
 CONFLICTED
 INVALID
+UNAVAILABLE
+UNVERIFIABLE
 ```
 
 ### Requirement
@@ -493,7 +503,11 @@ Historical evidence remains provenance.
 
 It does not automatically remain execution support.
 
+Where external measurement evidence is material to execution, continuity **MUST** be able to establish the identity, version, freshness, and integrity of the evidence to the level required by policy.
+
 A material evidence change **MUST** block inherited execution permission.
+
+Missing or unverifiable required measurement evidence **MUST NOT** be silently interpreted as continuity.
 
 ---
 
@@ -920,6 +934,8 @@ Examples:
 ```text
 authority source unavailable
 evidence source unavailable
+required measurement unavailable
+required measurement unverifiable
 resource state unresolved
 approval verification pending
 ```

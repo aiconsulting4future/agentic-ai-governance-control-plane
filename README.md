@@ -322,6 +322,12 @@ ELIGIBLE FOR BINDING
 
 Execution requires further proof.
 
+Runtime evidence may come from internal systems or external measurement providers, but the architecture keeps a strict boundary:
+
+> **Measurement evidence is descriptive. Governance interpretation is normative.**
+
+A provider may report runtime state such as drift, stability, coherence, coverage, latency, or freshness. The governance control plane determines what that evidence means for admissibility and consequence.
+
 ---
 
 # Binding
