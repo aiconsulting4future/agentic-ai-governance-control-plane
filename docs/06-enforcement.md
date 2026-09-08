@@ -237,15 +237,15 @@ A conceptual verification sequence is:
 8. Verify replay / consumption state
 9. Verify continuity result
 10. Verify commit-time conditions
-11. Atomically authorize mutation
-12. Execute protected action
-13. Consume authorization where required
+11. Enter the protected commit operation
+12. Coordinate authorization consumption where required
+13. Commit the protected mutation at the implementation's linearization point
 14. Emit execution receipt
 ```
 
-The exact ordering may vary depending on the transaction mechanism.
+The exact ordering inside the protected commit operation may vary depending on the transaction mechanism.
 
-However, checks that affect mutation legitimacy must occur before consequence is committed.
+However, checks that affect mutation legitimacy must complete before the protected consequence crosses its linearization point. Where single-use authorization consumption is required, that consumption must participate in the same atomic or equivalently protected commit semantics rather than remain a detached post-execution update.
 
 ---
 
@@ -501,19 +501,31 @@ for protected consequence.
 
 ## 6.13 The Commit Operation
 
-The strongest enforcement design minimizes the gap between final validation and mutation.
+The strongest enforcement design minimizes the gap between final validation and mutation and makes the transition from **not committed** to **committed consequence** mechanically identifiable.
 
 Conceptually:
 
 ```text
-Verify
-  ↓
-Authorize
-  ↓
-Commit
+Current-State Validation
+        ↓
+Commit Eligibility Established
+        ↓
+Protected Commit Operation
+        ↓
+LINEARIZATION POINT
+        ↓
+Committed Consequence
+        ↓
+Execution Receipt
 ```
 
-should behave as one protected operation or as a tightly controlled sequence.
+The **linearization point** is the implementation-defined point at which the protected operation takes effect as the single committed consequence for the governed request. Before that point, the operation has not yet created a successful protected consequence. At or after that point, the implementation must treat the consequence as committed for execution and provenance purposes.
+
+This does not require one universal transaction technology. Depending on the protected system, the linearization point may be represented by a transaction commit, successful conditional write, compare-and-set, durable state transition, or another mechanism with equivalent commit semantics.
+
+The architectural requirement is:
+
+> **Final governance validation, required authorization-consumption semantics, and protected mutation must be coordinated around one identifiable commit boundary so that execution legitimacy is established for the consequence that actually becomes committed.**
 
 For state that supports transactional semantics, implementations may use:
 
@@ -523,20 +535,22 @@ BEGIN TRANSACTION
 verify authorization
 verify current version
 verify replay state
-apply mutation
-consume authorization
-write receipt
+stage authorization consumption where required
+apply protected mutation
+write or stage execution receipt
 
-COMMIT
+COMMIT  ← LINEARIZATION POINT
 ```
 
-If any required verification fails:
+If any required precondition fails before commit:
 
 ```text
 ROLLBACK
 ```
 
-This is particularly important for replay protection and mutable resource state.
+The exact ordering of writes inside the protected operation is implementation-specific. What matters is that they participate in atomic or equivalently protected commit semantics and that the linearization point is explicit.
+
+This clarification defines the commit model. Detailed retry, timeout, crash-recovery, and concurrent-race behavior is an implementation and test obligation built on top of that model.
 
 ---
 

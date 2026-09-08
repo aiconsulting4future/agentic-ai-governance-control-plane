@@ -299,7 +299,9 @@ NOT Reusable(AuthZ_id)
 
 ### Implementation obligation
 
-Consumption state **MUST** be enforced atomically with the protected execution semantics required by the implementation. A second use of a consumed single-use authorization **MUST NOT** create a second protected consequence.
+Consumption state **MUST** be enforced atomically with the protected execution semantics required by the implementation. Where single-use semantics apply, authorization consumption must participate in the same protected commit unit, or an equivalent atomic mechanism, that determines whether the consequence commits.
+
+A second use of a consumed single-use authorization **MUST NOT** create a second protected consequence.
 
 ### Failure condition
 
@@ -389,6 +391,8 @@ ContinuityValid(a, t_commit)
 ### Implementation obligation
 
 For consequence classes that require continuity validation, the implementation **MUST** establish required current-state validity sufficiently close to the protected mutation that a stale earlier result cannot silently authorize consequence.
+
+For C8, `t_commit` denotes the protected operation's implementation-defined **linearization point**: the point at which that governed operation becomes the committed consequence. Commit-time revalidation must therefore be coordinated with the same protected commit semantics rather than treated as an earlier detached check.
 
 ### Failure condition
 

@@ -1018,6 +1018,10 @@ Protected Mutation
 
 The interval between the final validation and mutation should be minimized.
 
+For C8 and this contract, `t_commit` refers to the protected operation's **linearization point**: the implementation-defined point at which the consequence becomes committed, not merely the time at which an earlier continuity check was performed.
+
+Continuity validation may occur before that point, but the implementation must coordinate any required commit-time revalidation with the enforcement commit operation so that the validity being relied upon applies to the consequence that actually commits.
+
 Possible implementation mechanisms include:
 
 ```text
@@ -1036,6 +1040,8 @@ The architecture does not prescribe one mechanism.
 ### Requirement
 
 > **Final consequence must not depend on a materially stale continuity result.**
+
+The Continuity Contract establishes the required current-state validity. The Enforcement Contract defines how that validity is coordinated with the protected commit and its linearization point.
 
 ---
 
@@ -1772,6 +1778,8 @@ Meaning:
 ### Contract obligation
 
 A continuity result generated earlier in the workflow **MUST NOT** remain sufficient when a material state change can occur before commit.
+
+For this invariant, `t_commit` denotes the protected operation's linearization point. Continuity therefore **MUST** provide or support the current-state validation required by enforcement at that point; an earlier observation is insufficient if it can become materially stale before the consequence commits.
 
 ---
 
