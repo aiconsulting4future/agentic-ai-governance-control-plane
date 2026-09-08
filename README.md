@@ -392,6 +392,10 @@ Continuity therefore asks:
 
 > **Is this authorization still legitimate now?**
 
+Continuity is not merely runtime observation. It re-establishes whether a bound authorization remains legitimate under the governance state that exists at the consequence boundary.
+
+> **Runtime observation describes current state. Runtime governance determines what that state means for consequence.**
+
 For consequence-bearing operations, the strongest validation point is near the **commit boundary**.
 
 ---

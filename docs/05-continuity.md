@@ -115,6 +115,20 @@ The correct question at the consequence boundary is:
 Is the authorization still valid now?
 ```
 
+More precisely, continuity re-establishes the legitimacy of a bound authorization under the governance state that exists at the consequence boundary.
+
+This requires a distinction between observation and governance interpretation:
+
+```text
+Runtime observation
+    = what the current state is
+
+Runtime governance
+    = what that current state means for consequence
+```
+
+A runtime signal, snapshot, or measurement does not by itself determine whether execution remains legitimate. The governance control plane must interpret current state against the action, authority basis, policy, evidence requirements, risk, approval, scope, and other applicable control conditions.
+
 ---
 
 ## 5.2 Bound State and Current State
@@ -245,6 +259,8 @@ where:
 The exact dimensions may vary by implementation.
 
 The architectural requirement is that material state capable of changing execution legitimacy must not be silently ignored.
+
+Continuity therefore does more than observe whether state has changed. It determines whether the currently observed state preserves, weakens, invalidates, or leaves unresolved the legitimacy of the bound authorization for the pending consequence.
 
 ---
 
@@ -1163,6 +1179,8 @@ Binding answers:
 Continuity answers:
 
 > **Is that authorization still legitimate now?**
+
+In architectural terms, continuity re-establishes present execution legitimacy from current governance state; it does not merely report current runtime state.
 
 The architecture has now established:
 

@@ -50,6 +50,24 @@ REJECT
 
 The continuity contract closes the temporal gap between historical authorization and present execution legitimacy.
 
+Normatively:
+
+> **Continuity re-establishes the legitimacy of a bound authorization under the governance state that exists at the consequence boundary.**
+
+The contract distinguishes **runtime observation** from **runtime governance interpretation**:
+
+```text
+Runtime observation
+    = current state, signal, measurement, or verified fact
+
+Runtime governance interpretation
+    = the consequence-control meaning assigned to that state
+      under the applicable action, authority, evidence, scope,
+      policy, risk, approval, and execution conditions
+```
+
+A current observation **MUST NOT** be treated as execution permission merely because it is recent, accurate, or cryptographically verifiable. The continuity service must determine what that state means for the legitimacy of the pending consequence.
+
 For authority-dependent execution, continuity evaluates both the bounded authorization artifact and the independently governed authority basis from which that permission was derived. A valid, unexpired, or integrity-valid authorization artifact alone does **not** establish current authority.
 
 ---
@@ -151,6 +169,8 @@ Some may require re-evaluation.
 Some may immediately invalidate execution.
 
 The continuity contract therefore evaluates **material governance change**, not raw state difference.
+
+The result is not a description of `G_t1`. It is a governance determination about whether the bound authorization remains legitimate under `G_t1`.
 
 ---
 
@@ -853,7 +873,7 @@ They **MUST NOT** be left to ad hoc model judgment at execution time.
 
 ### `VALID`
 
-All required current continuity conditions hold.
+All required current continuity conditions hold, and the bound authorization has been re-established as legitimate under the current governance state.
 
 Meaning:
 
