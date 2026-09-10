@@ -130,7 +130,8 @@ A conceptual action object is:
   "parameters": {
     "beneficiary_id": "Vendor-ABC",
     "amount_minor": 25000000,
-    "currency": "INR"
+    "currency": "INR",
+    "payment_reference": "INV-8842"
   },
   "consequence": {
     "class": "financial",
@@ -367,7 +368,8 @@ For a bank transfer:
 {
   "beneficiary_id": "Vendor-ABC",
   "amount_minor": 25000000,
-  "currency": "INR"
+  "currency": "INR",
+  "payment_reference": "INV-8842"
 }
 ```
 
@@ -580,11 +582,12 @@ resource.resource_id
 parameters.beneficiary_id
 parameters.amount_minor
 parameters.currency
+parameters.payment_reference
 actor.tenant
 actor.environment
 ```
 
-would normally be material.
+would normally be material for the bank-transfer reference action.
 
 Possible non-material metadata may include:
 

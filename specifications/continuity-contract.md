@@ -1539,6 +1539,7 @@ At binding time:
 ```text
 Capability      = VALID
 Identity        = CURRENT
+Authority Basis = CURRENT
 Authority       = CURRENT
 Evidence        = SUFFICIENT
 Scope           = IN_SCOPE
@@ -1553,6 +1554,7 @@ At commit preparation:
 
 ```text
 Identity        = CURRENT
+Authority Basis = CURRENT
 Authority       = CURRENT
 Evidence        = CURRENT
 Scope           = IN_SCOPE
@@ -1564,6 +1566,8 @@ Resource        = ACTIVE
 Authorization  = UNEXPIRED
 Replay State    = UNUSED
 ```
+
+For this reference action, continuity re-establishes the independently governed authority basis `TREASURY-MANDATE-01`; possession of `AUTHZ-7F92` is not a substitute for that current-state check.
 
 Result:
 

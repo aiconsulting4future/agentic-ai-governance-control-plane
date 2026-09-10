@@ -1092,6 +1092,7 @@ Reference continuity state at `t1`:
 
 ```text
 Identity        = CURRENT
+Authority Basis = CURRENT
 Authority       = CURRENT
 Evidence        = CURRENT
 Scope           = IN_SCOPE
@@ -1103,6 +1104,8 @@ Resource        = ACTIVE
 Authorization  = UNEXPIRED
 Replay State    = UNUSED
 ```
+
+The current authority basis is re-established independently of the existence, signature validity, or expiry state of `AUTHZ-7F92`.
 
 Result:
 
@@ -1122,8 +1125,24 @@ CONT-441 = VALID
   "action_id": "ACT-2041",
   "evaluated_at": "2026-08-24T08:02:30Z",
   "result": "VALID",
+  "bound_state_refs": {
+    "authority_principal_id": "Treasury-Manager-17",
+    "authority_basis_id": "TREASURY-MANDATE-01",
+    "authority_snapshot_id": "AUTH-9841",
+    "evidence_snapshot_id": "EVD-225",
+    "approval_id": "APR-118",
+    "policy_version": 17
+  },
+  "current_state_refs": {
+    "authority_basis_state_id": "AUTHBASISSTATE-117",
+    "authority_state_id": "AUTHSTATE-992",
+    "evidence_state_id": "EVDSTATE-331",
+    "approval_state_id": "APRSTATE-201",
+    "policy_state_id": "POLSTATE-18"
+  },
   "dimensions": {
     "identity": "CURRENT",
+    "authority_basis": "CURRENT",
     "authority": "CURRENT",
     "evidence": "CURRENT",
     "scope": "IN_SCOPE",
@@ -1156,6 +1175,7 @@ Action hash             = MATCH
 Executor                = MATCH
 Authorization           = UNEXPIRED
 Replay State            = UNUSED
+Authority Basis         = CURRENT
 Authority               = CURRENT
 Approval                = PRESENT
 Evidence                = CURRENT
@@ -1164,7 +1184,9 @@ Resource                = ACTIVE
 Risk                    = ACCEPTABLE
 ```
 
-Only then may the action approach enforcement.
+These checks establish eligibility to enter the protected commit operation. They do not themselves constitute the committed consequence.
+
+Only after enforcement coordinates the required current-state validation, authorization consumption where required, and protected mutation may the action cross the implementation-defined linearization point.
 
 This operationalizes:
 
@@ -1281,7 +1303,7 @@ C10 — Fail Closed at Enforcement Boundary
 
 # 33. Transactional Commit
 
-A strong reference implementation should model the commit as a tightly controlled operation.
+A strong reference implementation should model the commit as a tightly controlled operation with an identifiable linearization point.
 
 Conceptually:
 
@@ -1293,19 +1315,35 @@ verify action hash
 verify executor
 verify resource
 verify CONT-441
+verify current authority basis
 verify resource state
-consume AUTHZ-7F92 if unused
+verify replay state
+stage AUTHZ-7F92 consumption if unused
 apply transfer mutation
-write execution receipt
+write or stage recoverable execution identity / receipt state
 
-COMMIT
+COMMIT  ← LINEARIZATION POINT
 ```
 
-If any required validation fails:
+Before the linearization point:
+
+```text
+CommittedConsequence = FALSE
+```
+
+At or after successful passage through the linearization point:
+
+```text
+CommittedConsequence = TRUE
+```
+
+If any required validation fails before commit:
 
 ```text
 ROLLBACK
 ```
+
+A timeout, crash, or receipt-delivery failure after the linearization point does not reverse the committed transfer. The system must recover the authoritative outcome rather than assume that no consequence occurred.
 
 ---
 
@@ -1324,18 +1362,24 @@ Correct behavior:
 ```text
 Request A
     ↓
-ConsumeIfUnused(AUTHZ-7F92)
+Protected Commit Operation
+    ↓
+AUTHZ-7F92 consumption coordinated with commit
+    ↓
+LINEARIZATION POINT
     ↓
 SUCCESS
 
-Request B
+Concurrent / retried Request B
     ↓
-ConsumeIfUnused(AUTHZ-7F92)
+same AUTHZ-7F92
     ↓
-REPLAY_REJECTED
+must not create a second protected consequence
 ```
 
-Only one execution may use the single-use authorization.
+For a single-use authorization, at most one attempt may cross the linearization point and create the protected consequence.
+
+If the caller times out and cannot determine whether Request A committed, the retry path must resolve the original execution state through the authorization-consumption state, execution identity, idempotency record, journal, protected resource state, or equivalent authoritative mechanism. Caller uncertainty must not create a second transfer.
 
 ---
 
@@ -1887,20 +1931,31 @@ C5
 
 # 53. Failure Scenario F — Replay
 
-First use:
+First committed use:
 
 ```text
 AUTHZ-7F92
+    → crosses LINEARIZATION POINT
     → SUCCESS
     → CONSUMED
 ```
 
-Second use:
+A later or concurrent use of the same single-use authorization:
 
 ```text
 AUTHZ-7F92
-    → REPLAY_REJECTED
+    → must not create a second protected consequence
 ```
+
+If the first caller times out after commit:
+
+```text
+Request failed / response missing
+    ≠
+Proof that the transfer did not occur
+```
+
+The implementation must recover or deduplicate the original execution rather than perform an uncoordinated second transfer.
 
 Invariant:
 
@@ -1915,13 +1970,15 @@ C6
 At binding:
 
 ```text
-Authority = CURRENT
+Authority Basis = CURRENT
+Authority       = CURRENT
 ```
 
 Before commit:
 
 ```text
-Authority = REVOKED
+Authority Basis = REVOKED
+Authority       = REVOKED
 ```
 
 Expected continuity:
@@ -2134,24 +2191,44 @@ C12
 
 # 61. Failure Scenario N — Missing Execution Receipt
 
-Transfer succeeds, but:
+Suppose the caller does not receive an execution receipt:
 
 ```text
-execution receipt = MISSING
+execution receipt observed by caller = MISSING
 ```
 
-Expected:
+That observation does not establish whether the transfer crossed the linearization point.
 
 ```text
-Provenance = INCOMPLETE
+No receipt observed
+    ≠
+No protected mutation occurred
 ```
 
-This is an implementation failure requiring recovery / investigation.
-
-Invariant:
+Expected behavior:
 
 ```text
+Commit state known NOT_COMMITTED
+    → no transfer occurred
+
+Commit state known COMMITTED
+    → recover / reconstruct the execution receipt and provenance
+
+Commit state cannot yet be established
+    → COMMIT_STATUS_UNKNOWN
+    → resolve from authoritative execution / resource state
+```
+
+The implementation must not create a second transfer merely because receipt delivery failed or the caller timed out.
+
+Until required execution evidence is authoritatively recovered, provenance is incomplete for examination purposes.
+
+Invariants:
+
+```text
+C6
 C13
+C14
 ```
 
 ---
@@ -2588,6 +2665,8 @@ If the future code and tests satisfy this specification, the reference implement
 13. alternate identified routes affect system-level governance;
 14. successful execution leaves reconstructable provenance;
 15. material provenance tampering is detectable.
+
+The implementation can additionally demonstrate the CHG-06/CHG-07 commit semantics: current-state validation and single-use authorization consumption are coordinated with the protected commit, caller uncertainty is distinguished from commit state, and recovery does not duplicate consequence.
 
 ---
 

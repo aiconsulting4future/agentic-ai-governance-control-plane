@@ -1347,7 +1347,7 @@ Corresponding authorization:
   "authorization_issuer_id": "Governance-Binding-Service-Prod",
   "executor_id": "Payments-Service-Prod",
   "action_type": "transfer_funds",
-  "action_hash": "sha256:...",
+  "action_hash": "sha256:ACTION-2041-HASH",
   "resource": {
     "resource_type": "bank_account",
     "resource_id": "Corporate-Account-01",
@@ -1368,8 +1368,8 @@ Corresponding authorization:
     "risk_classification": "HIGH",
     "approval_id": "APR-118"
   },
-  "issued_at": "2026-08-24T08:00:00Z",
-  "expires_at": "2026-08-24T08:05:00Z",
+  "issued_at": "2026-08-24T08:00:30Z",
+  "expires_at": "2026-08-24T08:05:30Z",
   "usage": {
     "mode": "single_use",
     "nonce": "9ecf..."
@@ -1380,6 +1380,8 @@ Corresponding authorization:
   }
 }
 ```
+
+This authorization is aligned to the bank-transfer reference scenario identifiers and timing. It remains a derived permission artifact: the current authority basis must still be established through continuity before protected consequence.
 
 This authorization means:
 

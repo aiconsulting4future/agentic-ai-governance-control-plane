@@ -1203,10 +1203,11 @@ from Corporate-Account-01
 to Vendor-ABC
 ```
 
-The execution request arrives at:
+The execution request is admitted through:
 
 ```text
-Payments-Service-Prod
+enforcement_point_id = PAYMENT-GATEWAY-01
+executor_id          = Payments-Service-Prod
 ```
 
 The enforcement layer evaluates:
@@ -1218,6 +1219,7 @@ Resource                        = MATCH
 Executor                        = MATCH
 Authorization lifetime         = VALID
 Replay state                    = UNUSED
+Authority-basis continuity     = CURRENT
 Authority continuity           = CURRENT
 Evidence continuity            = CURRENT
 Approval continuity            = PRESENT
@@ -1231,14 +1233,17 @@ Enforcement result:
 COMMIT
 ```
 
-The privileged service performs:
+The privileged service enters the protected commit operation:
 
 ```text
-debit Corporate-Account-01
-credit Vendor-ABC
-consume AUTHZ-7F92
-emit execution receipt
+verify current execution legitimacy
+coordinate single-use AUTHZ-7F92 consumption
+apply debit / payment mutation
+cross implementation-defined LINEARIZATION POINT
+emit or recover execution receipt
 ```
+
+For this scenario, the committed consequence is associated with `EXEC-881`. A timeout or missing caller response after the linearization point does not authorize a second transfer; the original commit state must be recovered.
 
 ---
 
