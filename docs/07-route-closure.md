@@ -1019,7 +1019,9 @@ Where:
 
 ### CLOSED
 
-All identified consequence-bearing routes are governed under an acceptable control model.
+All identified, in-scope consequence-bearing routes within the declared system boundary are governed under an acceptable control model.
+
+`CLOSED` is therefore a bounded claim over the current route inventory. It does **not** assert that no undiscovered route exists outside that inventory or boundary.
 
 ### PARTIAL
 
@@ -1107,6 +1109,8 @@ Not:
 
 > **No bypass is possible anywhere.**
 
+The maturity of a route-closure claim therefore depends on the quality and recency of the route inventory and the evidence supporting each route classification. Architecture can define the closure condition; implementation evidence must establish how comprehensively the declared boundary was examined.
+
 ---
 
 ## 7.28 Discovery vs Proof
@@ -1141,6 +1145,28 @@ A route inventory may be produced using:
 The architecture itself does not guarantee complete discovery.
 
 It requires that route closure be treated as an evidence-backed claim rather than an assumption.
+
+This creates an explicit proof boundary:
+
+```text
+Declared System Boundary
+        ↓
+Identified In-Scope Consequence Routes
+        ↓
+Route-Specific Governance Evidence
+        ↓
+Route-Closure Evaluation
+```
+
+A `CLOSED` evaluation proves only that the identified in-scope route set satisfies the declared closure condition. It is not proof that route discovery was globally exhaustive, that no malicious infrastructure path exists, or that future configuration changes cannot introduce a new route.
+
+If the route inventory is known to be incomplete or cannot be supported to the required level of confidence, the appropriate state is:
+
+```text
+UNKNOWN
+```
+
+rather than `CLOSED`.
 
 ---
 
@@ -1302,10 +1328,10 @@ A perfectly governed primary path cannot compensate for an open alternate path.
 
 ## 7.33 What Route Closure Proves — and What It Does Not
 
-Within a declared system boundary, route closure can establish that:
+Within a declared system boundary and relative to the route inventory actually examined, route closure can establish that:
 
-* consequence-bearing routes have been explicitly identified;
-* protected resources have defined mutation paths;
+* identified consequence-bearing routes have been explicitly evaluated;
+* identified protected-resource mutation paths have defined governance treatment;
 * AI-originated paths require governance enforcement;
 * alternate executors cannot silently bypass the primary control path;
 * fallback and retry routes have governance semantics;
@@ -1324,6 +1350,8 @@ Route closure does **not** by itself prove that:
 * every implementation is free from vulnerabilities.
 
 Route closure is therefore a **bounded architectural and operational property**, not a universal security guarantee.
+
+Its proof maturity should be stated in terms of the declared boundary, identified route inventory, evidence used to classify those routes, and the point in time at which that evidence was established. A stronger discovery process can increase confidence in the claim without changing the C11/C12 closure condition itself.
 
 ---
 
@@ -1388,7 +1416,7 @@ Enforced execution
 to:
 
 ```text
-Closed consequence-bearing route set
+Closed identified consequence-bearing route set
 ```
 
 One final architectural obligation remains.

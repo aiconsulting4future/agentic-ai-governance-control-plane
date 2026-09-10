@@ -556,6 +556,8 @@ verify:
 
 Route closure is a bounded property of the declared system architecture. It does not claim globally complete discovery of every possible infrastructure or malicious path.
 
+For C11, the quantified path set `P(A, Q)` is interpreted over the identified, in-scope consequence-bearing paths within the declared system boundary. Evidence that those paths were comprehensively discovered is a separate proof-maturity concern and must not be silently inferred from satisfaction of the invariant itself.
+
 ---
 
 ## C12 — No Alternate Consequence Path
@@ -582,7 +584,9 @@ A perfectly governed primary route **MUST NOT** be treated as proof of system-le
 
 ### Failure condition
 
-C12 fails when an open alternate route exists and the architecture nevertheless declares the protected state route-closed.
+C12 fails when an identified open alternate route exists and the architecture nevertheless declares the protected state route-closed.
+
+A `CLOSED` result under C12 remains bounded to the identified in-scope route set. It does not establish that undiscovered routes do not exist.
 
 ### Test intent
 
