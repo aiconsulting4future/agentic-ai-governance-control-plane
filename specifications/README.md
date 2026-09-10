@@ -369,6 +369,66 @@ These distinctions are fundamental to the architecture.
 
 ---
 
+# Implementation Profiles
+
+The specification layer is vendor-neutral. A concrete implementation may therefore publish an **implementation profile** that maps these normative contracts and invariants to specific mechanisms.
+
+Conceptually:
+
+```text
+Normative Architecture / Specifications
+        ↓
+Implementation Profile
+        ↓
+Concrete Runtime Mechanisms
+        ↓
+Implementation Evidence
+```
+
+A profile may describe, for example, how a particular implementation realizes:
+
+```text
+Action Contract
+Execution Authorization
+Continuity
+Enforcement
+Route Closure
+Decision Provenance
+```
+
+The profile must preserve a strict boundary:
+
+```text
+Implementation Profile
+    ≠
+Normative Specification
+```
+
+The normative source remains the architecture and specification set. A profile may select technologies, interfaces, identity systems, transaction mechanisms, policy engines, evidence sources, enforcement components, or provenance stores, but those implementation choices do not redefine C1–C15 or weaken the associated contract obligations.
+
+Different profiles may therefore coexist:
+
+```text
+Profile A — Native Reference Runtime
+Profile B — External Enforcement / Authorization Integration
+Profile C — Other Conforming Implementation
+```
+
+provided each profile remains explicit about:
+
+- which specification version it implements;
+- which invariants and contract obligations it claims to satisfy;
+- the declared system and execution boundaries;
+- which mechanisms realize those obligations;
+- what implementation evidence supports the claim;
+- and which obligations remain partial, unsupported, or outside scope.
+
+A product, framework, service, or external component used inside a profile is an implementation dependency, not the source of normative authority for this architecture.
+
+No implementation profile in this repository should be described as conforming, validated, or independently examined until the corresponding implementation and evidence exist.
+
+---
+
 # Reference Scenario
 
 The specifications are applied end-to-end in the repository's reference scenario:

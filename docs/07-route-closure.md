@@ -1202,6 +1202,43 @@ test_untrusted_executor_cannot_reach_payment_commit()
 
 This connects the architecture directly to implementation evidence.
 
+### Implementation Profiles and Route Closure
+
+An implementation profile may describe how a specific runtime, product, platform, or deployment architecture enforces the route-closure obligations.
+
+For example, a profile may map identified consequence-bearing routes to different concrete controls:
+
+```text
+Route A
+    → protected service enforcement
+
+Route B
+    → transaction-native enforcement
+
+Route C
+    → separately authorized administrative control
+```
+
+The mechanisms may differ.
+
+The required governance effect may not.
+
+An implementation profile therefore does not establish Route Closure merely by showing that its preferred execution path satisfies enforcement. It must account for the identified in-scope consequence-bearing route set and show how each route is closed, equivalently governed, explicitly exempt under an authorized control model, or left unresolved.
+
+The architecture remains the normative source:
+
+```text
+Route-Closure Obligation
+        ↓
+Implementation Profile
+        ↓
+Route-Specific Mechanisms
+        ↓
+Evidence
+```
+
+A profile may demonstrate one conforming realization. It **MUST NOT** redefine C11/C12, narrow the declared route set merely to make closure easier to claim, or convert an unresolved route into `CLOSED` without supporting evidence.
+
 ---
 
 ## 7.30 Bank Transfer Route-Closure Example

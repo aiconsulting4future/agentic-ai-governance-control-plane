@@ -1879,6 +1879,47 @@ The architecture is not tied to a particular technology.
 
 The contract defines the required control semantics.
 
+### Implementation Profile Boundary
+
+An implementation profile may map this contract to concrete enforcement mechanisms such as gateways, service middleware, policy engines, transaction services, workload identity, database controls, or other protected execution mechanisms.
+
+That mapping must preserve the direction of authority:
+
+```text
+Enforcement Contract
+        ↓
+Implementation Profile
+        ↓
+Concrete Enforcement Mechanism
+```
+
+not:
+
+```text
+Concrete Enforcement Mechanism
+        ↓
+Redefined Enforcement Contract
+```
+
+A profile may document implementation-specific details including:
+
+```text
+enforcement-point placement
+authorization representation
+identity verification
+continuity lookup
+commit / linearization mechanism
+replay protection
+failure handling
+execution receipt generation
+```
+
+but those choices **MUST NOT** weaken the contract's required control semantics or redefine C9–C10.
+
+Where a profile relies on an external enforcement or authorization component, that component is one implementation mechanism. The normative obligation remains defined by this contract and the architectural invariants.
+
+A profile also does not establish system-level Route Closure merely by demonstrating that one preferred enforcement path is correctly implemented.
+
 ---
 
 # 55. Specification Boundary

@@ -691,6 +691,28 @@ Independent Examination
 
 The repository can define claims and proof obligations before an implementation exists. An implementation can later produce evidence against those obligations. Neither publication of the specification nor production of implementation evidence, by itself, constitutes independent examination, certification, or external assurance.
 
+A concrete realization may be documented as an **implementation profile**:
+
+```text
+Vendor-Neutral Architecture / Specification
+        ↓
+Implementation Profile
+        ↓
+Concrete Mechanisms
+        ↓
+Implementation Evidence
+```
+
+An implementation profile explains how one runtime, platform, product, or deployment pattern realizes the normative obligations. It does **not** redefine those obligations.
+
+```text
+Implementation Profile
+    ≠
+Normative Specification
+```
+
+Different conforming profiles may use different technologies while remaining accountable to the same architectural invariants and contracts.
+
 The objective is not to stop at diagrams.
 
 The objective is to make the architecture executable and its claims examinable through bounded evidence.
