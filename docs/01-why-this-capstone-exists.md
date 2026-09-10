@@ -264,6 +264,50 @@ That model is made concrete through:
 
 The contribution is therefore not any one underlying mechanism in isolation. It is the control-plane structure that connects them from proposed action to governed consequence.
 
+## 1.7 Examination Boundary
+
+The architecture also distinguishes **architectural definition** from **independent examination**.
+
+```text
+Architecture Version
+        ↓
+Declared Claims
+        ↓
+Applicable Invariants
+        ↓
+Declared System Boundary
+        ↓
+Execution Boundary
+        ↓
+Implementation Evidence
+        ↓
+Executable Tests / Observed Results
+        ↓
+Independent Examination
+        ↓
+Bounded Finding
+```
+
+The architecture and specifications define what should be examined. An implementation provides the mechanisms being examined. Tests, receipts, state transitions, and other implementation artifacts provide evidence.
+
+Those layers do not themselves create an independent assurance result.
+
+```text
+Specification
+    ≠
+Implementation
+    ≠
+Implementation Evidence
+    ≠
+Independent Examination
+```
+
+An independent examination should therefore be tied to a specific architecture or specification version, explicit claim set, declared system boundary, execution boundary, implementation, and evidence set. Its finding is bounded to what was actually examined.
+
+Peer review of the architecture can improve the quality of the specification. It is not equivalent to formal implementation examination, certification, or audit.
+
+The current reference architecture defines claims and future proof obligations. Independent examination becomes meaningful only after an implementation and sufficient implementation evidence exist.
+
 ---
 
 ## Continue

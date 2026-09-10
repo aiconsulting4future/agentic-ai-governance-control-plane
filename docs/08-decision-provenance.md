@@ -876,6 +876,20 @@ Provenance preserves the history of governance.
 
 It does not replace governance.
 
+It can also provide material evidence for later implementation review or independent examination. That does not mean the existence of a provenance record is itself an assurance finding.
+
+```text
+Decision Provenance
+        ↓
+Examination Evidence
+        ≠
+Independent Examination
+```
+
+An examiner may use provenance to test a bounded claim about a specific architecture version, implementation, system boundary, execution boundary, and observed consequence. The resulting finding must remain scoped to the evidence and conditions actually examined.
+
+Peer review of the architecture and availability of provenance artifacts should therefore not be represented as certification, audit, or independent validation of the implementation.
+
 ---
 
 ## 8.24 Decision Provenance Architecture

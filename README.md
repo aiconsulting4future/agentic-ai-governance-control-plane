@@ -657,7 +657,7 @@ These cases map directly to invariants C1–C15 and will later become executable
 
 # Architecture vs Implementation
 
-This repository deliberately separates four concerns:
+This repository deliberately separates architecture, specification, implementation, evidence, and independent examination:
 
 ```text
 REFERENCE ARCHITECTURE
@@ -667,15 +667,33 @@ SPECIFICATIONS
 What contracts and invariants define it?
         ↓
 IMPLEMENTATION
-How can those controls be expressed in software?
+How are those controls expressed in software?
         ↓
-TESTS
-Can the architectural claims be demonstrated?
+IMPLEMENTATION EVIDENCE
+What tests and observed results demonstrate the claimed control properties?
+        ↓
+INDEPENDENT EXAMINATION
+What bounded finding can an examiner make about a specific version,
+claim set, system boundary, execution boundary, and evidence set?
 ```
+
+These layers are related but not interchangeable:
+
+```text
+Specification
+    ≠
+Implementation
+    ≠
+Implementation Evidence
+    ≠
+Independent Examination
+```
+
+The repository can define claims and proof obligations before an implementation exists. An implementation can later produce evidence against those obligations. Neither publication of the specification nor production of implementation evidence, by itself, constitutes independent examination, certification, or external assurance.
 
 The objective is not to stop at diagrams.
 
-The objective is to make the architecture executable.
+The objective is to make the architecture executable and its claims examinable through bounded evidence.
 
 ---
 
@@ -786,6 +804,7 @@ It does **not** claim to be:
 
 - a universal AI compliance framework;
 - a legal certification model;
+- an independently examined, audited, or certified implementation;
 - a replacement for organizational governance;
 - proof that every AI system can be made safe;
 - proof that every infrastructure path is uncompromisable;

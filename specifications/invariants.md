@@ -852,6 +852,52 @@ test_stale_authority_replica_fails_safe
 
 These tests principally stress C6, C8, C10, C13, and C14 across the linearization and recovery boundary.
 
+## 7.1 Implementation Evidence Is Not Independent Examination
+
+The invariant set defines normative control properties and future proof obligations. Evidence that an implementation satisfies a test or produces an expected result is **implementation evidence**.
+
+It is not, by itself, an independent examination finding.
+
+```text
+Invariant
+    ↓
+Implementation Control
+    ↓
+Executable Test
+    ↓
+Observed Result
+    ↓
+Implementation Evidence
+```
+
+A separate independent examination may later evaluate that evidence against a bounded examination scope such as:
+
+```text
+Architecture / Specification Version
+        +
+Declared Claims
+        +
+Applicable Invariants
+        +
+Declared System Boundary
+        +
+Execution Boundary
+        +
+Implementation Evidence
+        ↓
+Independent Examination
+        ↓
+Finding
+```
+
+### Examination boundary
+
+Satisfaction of C1–C15 in an implementation must not be described as independently certified, audited, or examined unless a separate examination has actually occurred.
+
+Likewise, peer review of these invariant definitions does not establish that a particular implementation satisfies them.
+
+An examination finding should remain attributable to the specific version, implementation boundary, evidence set, tests, and conditions that were examined. It must not be silently generalized into a universal security or compliance guarantee.
+
 ---
 
 # 8. What These Invariants Establish
@@ -905,6 +951,8 @@ These invariants do not claim to prove:
 - or appropriateness of every human approval.
 
 The invariants define architectural control properties. Their implementation strength depends on the quality of the systems, identities, evidence, policies, enforcement mechanisms, infrastructure boundaries, and operational processes used to satisfy them.
+
+They also do not constitute an independent examination result. Any external finding must be based on an explicitly bounded examination of a particular implementation and its evidence.
 
 ---
 
