@@ -33,3 +33,19 @@ Proposed Action
 - [Architectural Invariants](../specifications/invariants.md)
 - [Action Contract](../specifications/action-contract.md)
 - [Execution Authorization](../specifications/execution-authorization.md)
+
+## Architecture Maturity
+
+This directory contains the complete **v0.1 reference architecture**.
+
+```text
+Reference Architecture      COMPLETE
+C1–C15 Invariants           SPECIFIED
+Reference Scenario          SPECIFIED
+Executable Runtime          PLANNED
+Implementation Evidence     NOT YET PRODUCED
+Independent Examination     NOT YET PERFORMED
+```
+
+`COMPLETE` here refers to the architecture as a design artifact. It does not mean that the architecture has already been implemented, that C1–C15 have been proven by executable evidence, or that an independent examination has been performed.
+

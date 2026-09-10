@@ -2746,19 +2746,24 @@ The central architectural statement remains:
 
 ```text
 Reference Architecture v0.1       COMPLETE
-Architectural Invariants C1–C15   COMPLETE
+Architectural Invariants C1–C15   SPECIFIED
 Action Contract                   COMPLETE
 Execution Authorization           COMPLETE
 Continuity Contract               COMPLETE
 Enforcement Contract              COMPLETE
 Provenance Contract               COMPLETE
-Bank-Transfer Specification       COMPLETE
-LinkedIn Capstone                 NEXT
+Bank-Transfer Reference Scenario  SPECIFIED
 Executable Implementation         PLANNED
 Invariant Tests                   PLANNED
+Implementation Evidence           NOT YET PRODUCED
+Invariant Proof                   NOT YET COMPLETE
+Route Closure Proof               NOT YET COMPLETE
+Independent Examination           NOT YET PERFORMED
 ```
 
-This document is the canonical end-to-end reference scenario for **The Agentic AI Governance Control Plane v0.1**.
+This document is the canonical end-to-end **specified reference scenario** for **The Agentic AI Governance Control Plane v0.1**.
+
+Its successful and failure paths define expected governance behavior and future proof obligations. They are not a claim that the scenario has already been executed against a production banking system or that the invariants have already been demonstrated by executable evidence.
 
 ---
 

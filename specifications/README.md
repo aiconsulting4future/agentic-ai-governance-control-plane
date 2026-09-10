@@ -513,18 +513,24 @@ Follow links back to architecture sections
 
 ```text
 Reference Architecture v0.1       COMPLETE
-Architectural Invariants C1–C15   COMPLETE
-Action Contract                    COMPLETE
-Execution Authorization            COMPLETE
-Continuity Contract                COMPLETE
-Enforcement Contract               COMPLETE
-Provenance Contract                COMPLETE
-Bank-Transfer Specification        COMPLETE
-Reference Implementation           PLANNED
-Executable Invariant Tests         PLANNED
+Architectural Invariants C1–C15   SPECIFIED
+Action Contract                   COMPLETE
+Execution Authorization           COMPLETE
+Continuity Contract               COMPLETE
+Enforcement Contract              COMPLETE
+Provenance Contract               COMPLETE
+Bank-Transfer Reference Scenario  SPECIFIED
+Reference Implementation          PLANNED
+Executable Invariant Tests        PLANNED
+Implementation Evidence           NOT YET PRODUCED
+Invariant Proof                   NOT YET COMPLETE
+Route Closure Proof               NOT YET COMPLETE
+Independent Examination           NOT YET PERFORMED
 ```
 
-The specification layer is now complete for **The Agentic AI Governance Control Plane v0.1**.
+The normative specification layer is complete for **The Agentic AI Governance Control Plane v0.1**.
+
+This status describes specification maturity only. It does not claim that a reference implementation exists, that C1–C15 have been demonstrated through executable evidence, that Route Closure has been proven for a deployed system, or that independent examination has occurred.
 
 ---
 

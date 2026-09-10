@@ -783,36 +783,50 @@ agentic-ai-governance-control-plane/
 | Reference Architecture | **Complete — v0.1** |
 | Eight Architecture Sections | **Complete** |
 | Architecture Diagrams | **Complete** |
-| Architectural Invariants C1–C15 | **Complete** |
-| Action Contract | **Complete** |
-| Execution Authorization | **Complete** |
-| Continuity Contract | **Complete** |
-| Enforcement Contract | **Complete** |
-| Provenance Contract | **Complete** |
-| Bank Transfer Reference Specification | **Complete** |
-| LinkedIn Capstone | **Next** |
+| Architectural Invariants C1–C15 | **Specified** |
+| Normative Contracts | **Complete — v0.1** |
+| Bank Transfer Reference Scenario | **Specified** |
 | Reference Implementation | **Planned** |
-| Automated Invariant Tests | **Planned** |
+| Executable Invariant Tests | **Planned** |
+| Implementation Evidence | **Not Yet Produced** |
+| Invariant Proof | **Not Yet Complete** |
+| Route Closure Proof | **Not Yet Complete** |
+| Independent Examination | **Not Yet Performed** |
 
-The reference design package is now complete through the practical specification layer.
+The reference architecture, normative specification layer, and bank-transfer reference scenario are complete as design artifacts. The repository does not yet contain an executable reference implementation or executable evidence establishing implementation-level satisfaction of C1–C15.
 
 ```text
-Architecture
-     ↓
-Invariants
-     ↓
-Contracts
-     ↓
-Bank-Transfer Reference Scenario
-     ↓
-Reference Implementation
-     ↓
-Executable Tests
-     ↓
-Evidence
+Architecture                COMPLETE
+Normative Specification     COMPLETE
+C1–C15 Invariants           SPECIFIED
+Reference Scenario          SPECIFIED
+Executable Runtime          PLANNED
+Invariant Proof             NOT YET COMPLETE
+Route Closure Proof         NOT YET COMPLETE
+Independent Examination     NOT YET PERFORMED
 ```
 
-The next engineering phase will translate these specifications into software and executable invariant tests.
+The maturity boundary is explicit:
+
+```text
+Architecture Complete
+    ≠
+Implementation Complete
+
+Specification Complete
+    ≠
+Invariant Proven
+
+Scenario Specified
+    ≠
+Production System Validated
+
+Peer Reviewed
+    ≠
+Independently Examined
+```
+
+The next engineering phase will translate these specifications into software, executable invariant tests, and implementation evidence.
 
 ---
 
